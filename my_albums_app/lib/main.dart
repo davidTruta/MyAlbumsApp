@@ -1,55 +1,33 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:material_color_gen/material_color_gen.dart';
-import 'package:my_albums_app/ui/views/album_screen.dart';
-import 'package:my_albums_app/ui/views/no_internet_screen.dart';
-import 'package:my_albums_app/ui/views/splash_screen.dart';
-import 'package:my_albums_app/ui/views/tabs_screen.dart';
-import 'package:my_albums_app/ui/views/temp_screen.dart';
-import 'package:my_albums_app/view_models/album_view_model.dart';
-import 'package:my_albums_app/view_models/photo_view_model.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:my_albums_app/screen/albums/details/album_screen.dart';
+import 'package:my_albums_app/screen/error/no_internet_screen.dart';
+import 'package:my_albums_app/screen/main/main_screen.dart';
+import 'package:my_albums_app/screen/temp_screen.dart';
+import 'package:my_albums_app/theming/theme.dart';
 
-void main() {
-  runApp(const MyApp());
-}
 
-class MyApp extends StatefulWidget {
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  late Timer _timer;
-  static final AlbumsViewModel albumsViewModel = AlbumsViewModel();
-  static final PhotosViewModel photosViewModel = PhotosViewModel();
-
-  @override
-  initState() {
-    super.initState();
-    _timer = Timer(const Duration(seconds: 3), () => {setState(() {})});
-  }
-
-  // This widget is the root of your application.
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-          fontFamily: 'Nunito',
-          primarySwatch:
-              const Color.fromRGBO(68, 108, 194, 1).toMaterialColor()),
-      home: _timer.isActive
-          ? const SplashScreen()
-          : TabsScreen(
-              albumsViewModel: albumsViewModel,
-            ),
+      title: 'My Album App',
+      theme: myThemeData,
+      home: const MainScreen(),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [ // English, no country code
+        Locale('es', ''), // Spanish, no country code
+      ],
       routes: {
-        AlbumScreen.routeName: (context) => AlbumScreen(
-              viewModel: photosViewModel,
-            ),
+        AlbumScreen.routeName: (context) => AlbumScreen(),
         NoInternetScreen.routeName: (context) => const NoInternetScreen(),
         TempScreen.routeName: (context) => const TempScreen(),
       },
