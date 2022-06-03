@@ -7,16 +7,11 @@ import 'package:my_albums_app/screen/albums/album_view_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'list/albums_list_screen.dart';
 
-class AlbumsScreen extends StatefulWidget {
-  const AlbumsScreen({Key? key}) : super(key: key);
-
-  @override
-  State<AlbumsScreen> createState() => _AlbumsScreenState();
-}
-
-class _AlbumsScreenState extends State<AlbumsScreen> {
+class AlbumsScreen extends StatelessWidget {
   final AlbumsViewModel viewModel =
-      AlbumsViewModel(albumRepo: AlbumRepo(ClientApi(Dio())));
+      AlbumsViewModel(AlbumRepo(ClientApi(Dio())));
+
+  AlbumsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +29,10 @@ class _AlbumsScreenState extends State<AlbumsScreen> {
                   Fluttertoast.showToast(
                     msg: AppLocalizations.of(context)!.localAlbumsWereLoaded,
                   );
-                  return AlbumsListScreen(albums: albums);
+                  return AlbumsListScreen(
+                    albums: albums,
+                    viewModel: viewModel,
+                  );
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -44,7 +42,10 @@ class _AlbumsScreenState extends State<AlbumsScreen> {
             );
           } else {
             albums = snapshot.data as List<AlbumViewModel>;
-            return AlbumsListScreen(albums: albums);
+            return AlbumsListScreen(
+              albums: albums,
+              viewModel: viewModel,
+            );
           }
         } else {
           return const Center(

@@ -1,17 +1,33 @@
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/album.dart';
 import '../../repo/album_repo.dart';
 
 class AlbumsViewModel {
-  AlbumRepo albumRepo;
+  final AlbumRepo _albumRepo;
+  AlbumViewModel? _selectedAlbum;
 
-  AlbumsViewModel({required this.albumRepo});
+  AlbumsViewModel(this._albumRepo);
+
+  AlbumViewModel? get getSelectedAlbum {
+    return _selectedAlbum;
+  }
+
+  void setSelectedAlbum(AlbumViewModel? album) {
+    _selectedAlbum = album;
+  }
+
+  bool isEven(int id) {
+    if (id % 2 == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   Future<List<AlbumViewModel>> fetchAlbums() async {
     try {
-      return (await albumRepo.getAlbums())
+      return (await _albumRepo.getAlbums())
           .map((a) => AlbumViewModel(a))
           .toList();
     } catch (err) {
@@ -24,10 +40,10 @@ class AlbumsViewModel {
     final List<String>? albums = prefs.getStringList('albums');
     return albums!.map((a) {
       final args = a.split(",");
-      return AlbumViewModel(Album(id: int.parse(args[0]), userId: int.parse(args[1]), title: args[2]));
+      return AlbumViewModel(Album(
+          id: int.parse(args[0]), userId: int.parse(args[1]), title: args[2]));
     }).toList();
   }
-
 }
 
 class AlbumViewModel {

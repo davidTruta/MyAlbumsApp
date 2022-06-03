@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:my_albums_app/screen/main/tab_bar_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../albums/albums_screen.dart';
 import '../splash/splash_screen.dart';
@@ -27,19 +29,14 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return _timer.isActive
         ? const SplashScreen()
-        : DefaultTabController(
-            length: 4,
-            child: Scaffold(
-              body: TabBarView(
-                children: [
-                  AlbumsScreen(),
-                  const TempScreen(),
-                  const TempScreen(),
-                  const TempScreen(),
-                ],
-              ),
-              bottomNavigationBar: const TabBarWidget(),
-            ),
+        : TabBarWidget(
+            screens: [
+              {'screen': AlbumsScreen(), 'icon':const Icon(Icons.search), 'label': Text(AppLocalizations.of(context)!.browse.toUpperCase())},
+              {'screen': const TempScreen(), 'icon':const Icon(Icons.emoji_emotions_outlined), 'label': Text(AppLocalizations.of(context)!.friends.toUpperCase())},
+              const {'screen': TempScreen(), 'icon':Icon(Icons.question_mark), 'label': Text("??????")},
+              {'screen': const TempScreen(), 'icon':const Icon(Icons.newspaper), 'label': Text(AppLocalizations.of(context)!.news.toUpperCase())},
+              {'screen': const TempScreen(), 'icon':const Icon(Icons.account_circle_outlined), 'label': Text(AppLocalizations.of(context)!.profile.toUpperCase())},
+            ],
           );
   }
 }

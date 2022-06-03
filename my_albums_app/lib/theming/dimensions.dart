@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 const smallPadding = 10.0;
@@ -32,5 +30,7 @@ const photoListTilePadding = EdgeInsets.all(0);
 
 const albumListTileDistance = normalVerticalDistance;
 
+const circularProgressIndicatorBoxConstraint =
+    BoxConstraints(maxWidth: 50, maxHeight: 50);
 
 const tabIconMargin = EdgeInsets.only(bottom: 3);

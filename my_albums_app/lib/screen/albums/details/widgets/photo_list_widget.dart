@@ -49,6 +49,12 @@ class _PhotoListWidgetState extends State<PhotoListWidget> {
                 ),
                 child: Image.network(
                   widget.photos[i].url,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return ConstrainedBox(constraints: circularProgressIndicatorBoxConstraint,
+                    child: const Center(child: CircularProgressIndicator()));
+                  },
                 ),
               ),
               title: Text(

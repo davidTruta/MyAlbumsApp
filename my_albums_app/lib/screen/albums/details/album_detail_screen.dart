@@ -29,40 +29,46 @@ class AlbumDetailScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else {
-            final photos = snapshot.data as List<PhotoViewModel>;
-            return SingleChildScrollView(
-              child: Center(
-                  child: Padding(
-                padding: albumDetailsPadding,
-                child: Column(
-                  children: [
-                    AlbumHeaderWidget(
-                      id: album.id,
-                      title: album.title,
-                    ),
-                    const Divider(
-                      thickness: dividerThickness,
-                    ),
-                    IntrinsicHeight(
-                      child: Padding(
-                        padding: albumInteractionPadding,
-                        child: AlbumInteractionWidget(
-                          nrOfPhotos: photos.length,
+            if (snapshot.error != null) {
+              return const Center(
+                  child: Text(
+                      '!!!Temporary ERROR!!!\n we also need to store photos locally', textAlign: TextAlign.center,));
+            } else {
+              final photos = snapshot.data as List<PhotoViewModel>;
+              return SingleChildScrollView(
+                child: Center(
+                    child: Padding(
+                  padding: albumDetailsPadding,
+                  child: Column(
+                    children: [
+                      AlbumHeaderWidget(
+                        id: album.id,
+                        title: album.title,
+                      ),
+                      const Divider(
+                        thickness: dividerThickness,
+                      ),
+                      IntrinsicHeight(
+                        child: Padding(
+                          padding: albumInteractionPadding,
+                          child: AlbumInteractionWidget(
+                            nrOfPhotos: photos.length,
+                          ),
                         ),
                       ),
-                    ),
-                    const Divider(
-                      thickness: dividerThickness,
-                    ),
-                    normalVerticalDistance,
-                    PhotoListWidget(
-                      albumId: album.id,
-                      photos: photos,
-                    )
-                  ],
-                ),
-              )),
-            );
+                      const Divider(
+                        thickness: dividerThickness,
+                      ),
+                      normalVerticalDistance,
+                      PhotoListWidget(
+                        albumId: album.id,
+                        photos: photos,
+                      )
+                    ],
+                  ),
+                )),
+              );
+            }
           }
         });
   }
