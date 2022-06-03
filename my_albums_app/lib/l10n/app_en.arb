@@ -1,0 +1,16 @@
+{
+    "browse": "browse",
+    "friends": "friends",
+    "news": "news",
+    "profile": "profile",
+    "saveToFavorites": "Save to favorites",
+    "addAComment": "Add a Comment",
+    "albumWithId": "Album with id",
+    "photoWithId": "Photo with id",
+    "myAlbums": "My Albums",
+    "myProfile": "My Profile",
+    "myFriends": "My Friends",
+    "details": "Details",
+    "photos": "Photos",
+    "localAlbumsWereLoaded": "Local albums were loaded due to internet connection error"
+}

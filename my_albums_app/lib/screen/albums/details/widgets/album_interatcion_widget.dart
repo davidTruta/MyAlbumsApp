@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AlbumInteractionWidget extends StatelessWidget {
@@ -34,10 +35,10 @@ class AlbumInteractionWidget extends StatelessWidget {
                   Icons.favorite,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                const Text(
-                  'Save to favorites',
+                Text(
+                  AppLocalizations.of(context)!.saveToFavorites,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black45),
+                  style: Theme.of(context).textTheme.titleSmall,
                 )
               ],
             ),
@@ -55,13 +56,10 @@ class AlbumInteractionWidget extends StatelessWidget {
                 child: Text(
                   nrOfPhotos.toString(),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Theme.of(context).colorScheme.primary),
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
-              const Text('Photos', style: TextStyle(color: Colors.black45))
+              Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).textTheme.titleSmall,)
             ],
           ),
         ),
@@ -91,9 +89,8 @@ class AlbumInteractionWidget extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-                const Text('Add a \ncomment',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black45))
+                Text(AppLocalizations.of(context)!.addAComment,
+                    textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleSmall,)
               ],
             ),
           ),

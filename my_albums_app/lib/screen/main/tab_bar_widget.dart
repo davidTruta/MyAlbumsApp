@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../theming/dimensions.dart';
+
 
 class TabBarWidget extends StatefulWidget {
-  final Function setSelectedIndex;
 
-  const TabBarWidget({Key? key, required this.setSelectedIndex})
+  const TabBarWidget({Key? key})
       : super(key: key);
 
   @override
@@ -11,37 +14,25 @@ class TabBarWidget extends StatefulWidget {
 }
 
 class _TabBarWidgetState extends State<TabBarWidget> {
+  Widget _buildTab(String text, Icon icon) {
+    return Tab( icon: icon, text: text, iconMargin: tabIconMargin,);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 70,
+      height: tabBarHeight,
       color: Theme.of(context).primaryColor,
       child: TabBar(
-        padding: const EdgeInsets.only(top: 3),
         labelColor: Theme.of(context).colorScheme.onPrimaryContainer,
-        labelStyle: const TextStyle(
-          fontSize: 14,
-        ),
+        labelStyle: Theme.of(context).textTheme.labelSmall,
         indicatorColor: Theme.of(context).primaryColor,
-        onTap: (value) => widget.setSelectedIndex(value),
         unselectedLabelColor: Theme.of(context).colorScheme.onPrimary,
-        tabs: const [
-          Tab(
-              iconMargin: EdgeInsets.only(bottom: 3),
-              icon: Icon(Icons.search),
-              text: 'BROWSE'),
-          Tab(
-              iconMargin: EdgeInsets.only(bottom: 3),
-              icon: Icon(Icons.tag_faces),
-              text: 'FRIENDS'),
-          Tab(
-              iconMargin: EdgeInsets.only(bottom: 3),
-              icon: Icon(Icons.article_outlined),
-              text: 'NEWS'),
-          Tab(
-              iconMargin: EdgeInsets.only(bottom: 3),
-              icon: Icon(Icons.account_circle_outlined),
-              text: 'PROFILE'),
+        tabs: [
+          _buildTab(AppLocalizations.of(context)!.browse.toUpperCase(), const Icon(Icons.search)),
+          _buildTab(AppLocalizations.of(context)!.friends.toUpperCase(), const Icon(Icons.tag_faces)),
+          _buildTab(AppLocalizations.of(context)!.news.toUpperCase(), const Icon(Icons.article_outlined)),
+          _buildTab(AppLocalizations.of(context)!.profile.toUpperCase(), const Icon(Icons.account_circle_outlined)),
         ],
       ),
     );

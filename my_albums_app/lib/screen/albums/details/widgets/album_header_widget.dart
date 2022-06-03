@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_albums_app/theming/dimensions.dart';
 
 class AlbumHeaderWidget extends StatelessWidget {
   final int id;
@@ -11,36 +13,28 @@ class AlbumHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
+        normalVerticalDistance,
         CircleAvatar(
           foregroundColor: Theme.of(context).colorScheme.onPrimary,
           backgroundColor: Theme.of(context).colorScheme.primary,
           minRadius: 40.0,
           child: Text(
             title[0],
-            style: const TextStyle(fontSize: 38),
+            style: Theme.of(context).textTheme.headlineLarge,
           ),
         ),
-        const SizedBox(
-          height: 25,
-        ),
+        normalVerticalDistance,
         Text(
           title,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
-        const SizedBox(
-          height: 5,
-        ),
+        xSmallVerticalDistance,
         Text(
-          'Album with id: $id',
-          style: const TextStyle(fontSize: 14, color: Colors.black45),
+          '${AppLocalizations.of(context)!.albumWithId}: $id',
+          style: Theme.of(context).textTheme.titleSmall,
         ),
-        const SizedBox(
-          height: 20,
-        ),
+        normalVerticalDistance,
       ],
     );
   }

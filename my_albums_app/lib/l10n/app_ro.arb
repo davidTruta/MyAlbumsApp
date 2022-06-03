@@ -1,0 +1,16 @@
+{
+    "browse": "cauta",
+    "friends": "prieteni",
+    "news": "stiri",
+    "profile": "profil",
+    "saveToFavorites": "Salveaza la favorite",
+    "addAComment": "Adauga un comentariu",
+    "albumWithId": "Albumul cu id",
+    "photoWithId": "Fotografia cu id",
+    "myAlbums": "Albume",
+    "myProfile": "Profil",
+    "myFriends": "Prieteni",
+    "details": "Detalii",
+    "photos": "Fotografii",
+    "localAlbumsWereLoaded": "Din cauza unei erori de conectare la internet, au fost afisate albumele locale"
+}

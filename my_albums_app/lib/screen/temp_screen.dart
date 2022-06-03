@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/app_bar_widget.dart';
+
 class TempScreen extends StatelessWidget {
   static const routeName = '/temp-screen';
 
@@ -7,12 +9,19 @@ class TempScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        Text('Coming soon!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-        Text('This feature was not yet implemented, but it willbe in short time!', textAlign: TextAlign.center,),
-      ],
-    ));
+    return Scaffold(
+      appBar: AppBarWidget(
+        title:
+        Text('Temp Screen', style: Theme.of(context).textTheme.headlineSmall),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        centerTitle: false,
+      ),
+      body: Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Text('Coming soon!'),
+        ],
+      )),
+    );
   }
 }

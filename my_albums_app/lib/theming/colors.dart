@@ -12,5 +12,6 @@ Color secondary = const Color(0xFF3F5AA6).withOpacity(0.6);
 const Color onSecondary = Colors.white70;
 const Color canvasColor = Colors.white70;
 const Color cardColor = Colors.white70;
-const Color borderColor = Colors.grey;
+const Color borderColor = Colors.black12;
 const Color unselectedTabBarLabel = Colors.white54;
+const Color subtitleColor = Colors.grey;

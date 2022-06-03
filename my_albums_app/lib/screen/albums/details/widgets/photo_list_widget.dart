@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'photo_view_model.dart';
+import '../../../../theming/dimensions.dart';
+import '../photo_view_model.dart';
 
 class PhotoListWidget extends StatefulWidget {
   final int albumId;
@@ -14,31 +16,24 @@ class PhotoListWidget extends StatefulWidget {
 }
 
 class _PhotoListWidgetState extends State<PhotoListWidget> {
-  final header = Row(
-    children: const [
-      SizedBox(
-        height: 20,
-      ),
-      Text(
-        'Photos',
-        textAlign: TextAlign.start,
-        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black45),
-      ),
-    ],
-  );
-
   @override
   Widget build(BuildContext context) {
+    final header = Row(
+      children: [
+        normalVerticalDistance,
+        Text(
+          AppLocalizations.of(context)!.photos,
+          textAlign: TextAlign.start,
+        ),
+      ],
+    );
     return ListView(
       physics: const ScrollPhysics(),
       shrinkWrap: true,
       children: [
         header,
-        const SizedBox(
-          height: 10,
-        ),
+        smallVerticalDistance,
         ListView.separated(
-          padding: const EdgeInsets.all(0),
           physics: const ScrollPhysics(),
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
@@ -46,8 +41,8 @@ class _PhotoListWidgetState extends State<PhotoListWidget> {
           itemBuilder: (context, i) {
             return ListTile(
               minVerticalPadding: 0,
-              horizontalTitleGap: 20,
-              contentPadding: const EdgeInsets.all(0),
+              horizontalTitleGap: photoListTileTitleGap,
+              contentPadding: photoListTilePadding,
               leading: ClipRRect(
                 borderRadius: const BorderRadius.all(
                   Radius.circular(10),
@@ -58,17 +53,11 @@ class _PhotoListWidgetState extends State<PhotoListWidget> {
               ),
               title: Text(
                 widget.photos[i].title,
-                style: TextStyle(
-                    fontSize: 15,
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               subtitle: Text(
-                'Photo with id: ${widget.photos[i].id}',
-                style: const TextStyle(
-                  fontSize: 12,
-                ),
+                '${AppLocalizations.of(context)!.photoWithId}: ${widget.photos[i].id}',
               ),
             );
           },
