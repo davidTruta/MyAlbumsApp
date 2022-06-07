@@ -37,12 +37,18 @@ class AlbumsViewModel {
 
   Future<List<AlbumViewModel>> fetchLocalAlbums() async {
     final prefs = await SharedPreferences.getInstance();
-    final List<String>? albums = prefs.getStringList('albums');
-    return albums!.map((a) {
-      final args = a.split(",");
-      return AlbumViewModel(Album(
-          id: int.parse(args[0]), userId: int.parse(args[1]), title: args[2]));
-    }).toList();
+    try {
+      final List<String>? albums = prefs.getStringList('albums');
+      return albums!.map((a) {
+        final args = a.split(",");
+        return AlbumViewModel(Album(
+            id: int.parse(args[0]),
+            userId: int.parse(args[1]),
+            title: args[2]));
+      }).toList();
+    } catch (err) {
+      throw Exception("There are no local albums");
+    }
   }
 }
 
@@ -58,4 +64,12 @@ class AlbumViewModel {
   String get title {
     return _album.title as String;
   }
+
+  @override
+  operator ==(Object other) {
+    return other is AlbumViewModel && other._album == _album;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

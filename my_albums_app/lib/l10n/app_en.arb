@@ -12,5 +12,6 @@
     "myFriends": "My Friends",
     "details": "Details",
     "photos": "Photos",
-    "localAlbumsWereLoaded": "Local albums were loaded due to internet connection error"
+    "localAlbumsWereLoaded": "Local albums were loaded due to internet connection error",
+    "yourProfile": "Your Profile"
 }

@@ -1,10 +1,11 @@
+
 import '../../../model/photo.dart';
 import '../../../repo/photo_repo.dart';
 
 class PhotosViewModel {
   PhotoRepo photoRepo;
 
-  PhotosViewModel({required this.photoRepo});
+  PhotosViewModel(this.photoRepo);
 
   Future<List<PhotoViewModel>> fetchPhotosFromAlbum(int albumId) async {
     try {
@@ -33,4 +34,13 @@ class PhotoViewModel {
   String get url {
     return _photo.url as String;
   }
+
+  @override
+  operator==(Object other){
+    return other is PhotoViewModel && other._photo == _photo;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
 }

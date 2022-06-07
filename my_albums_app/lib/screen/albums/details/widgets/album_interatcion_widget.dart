@@ -20,13 +20,7 @@ class AlbumInteractionWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             onTap: () {
               Fluttertoast.showToast(
-                  msg: "Not implemented yet !",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  textColor: Theme.of(context).colorScheme.onPrimary,
-                  fontSize: 16.0
+                msg: "Not implemented yet !",
               );
             },
             child: Column(
@@ -59,7 +53,10 @@ class AlbumInteractionWidget extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
-              Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).textTheme.titleSmall,)
+              Text(
+                AppLocalizations.of(context)!.photos,
+                style: Theme.of(context).textTheme.titleSmall,
+              )
             ],
           ),
         ),
@@ -73,13 +70,7 @@ class AlbumInteractionWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             onTap: () {
               Fluttertoast.showToast(
-                  msg: "Not implemented yet !",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  textColor: Theme.of(context).colorScheme.onPrimary,
-                  fontSize: 16.0
+                msg: "Not implemented yet !",
               );
             },
             child: Column(
@@ -89,8 +80,11 @@ class AlbumInteractionWidget extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-                Text(AppLocalizations.of(context)!.addAComment,
-                    textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleSmall,)
+                Text(
+                  AppLocalizations.of(context)!.addAComment,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleSmall,
+                )
               ],
             ),
           ),

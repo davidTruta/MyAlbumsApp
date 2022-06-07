@@ -25,14 +25,19 @@ class AlbumsScreen extends StatelessWidget {
               future: viewModel.fetchLocalAlbums(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.waiting) {
-                  albums = snapshot.data as List<AlbumViewModel>;
-                  Fluttertoast.showToast(
-                    msg: AppLocalizations.of(context)!.localAlbumsWereLoaded,
-                  );
-                  return AlbumsListScreen(
-                    albums: albums,
-                    viewModel: viewModel,
-                  );
+                  if (snapshot.error != null) {
+                    albums = snapshot.data as List<AlbumViewModel>;
+                    Fluttertoast.showToast(
+                      msg: AppLocalizations.of(context)!.localAlbumsWereLoaded,
+                    );
+                    return AlbumsListScreen(
+                      albums: albums,
+                      viewModel: viewModel,
+                    );
+                  } else{
+                    Fluttertoast.showToast(msg: "There are no local albums");
+                    return Container();
+                  }
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),

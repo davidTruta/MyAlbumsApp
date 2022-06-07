@@ -20,19 +20,14 @@ class AlbumsListScreen extends StatefulWidget {
 }
 
 class _AlbumsListScreenState extends State<AlbumsListScreen> {
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.viewModel.getSelectedAlbum == null
-          ? AppBarWidget(
-              title: Text(AppLocalizations.of(context)!.myAlbums,
-                  style: Theme.of(context).textTheme.headlineSmall),
-              backgroundColor: Theme.of(context).colorScheme.background,
-            )
-          : AppBarWidget(
+    return widget.viewModel.getSelectedAlbum != null
+        ? Scaffold(
+            appBar: AppBarWidget(
               title: Text(AppLocalizations.of(context)!.details,
                   style: Theme.of(context).textTheme.headlineSmall),
-              backgroundColor: Theme.of(context).colorScheme.background,
               centerTitle: true,
               leading: IconButton(
                 icon: Icon(Icons.arrow_back,
@@ -44,8 +39,15 @@ class _AlbumsListScreenState extends State<AlbumsListScreen> {
                 },
               ),
             ),
-      body: widget.viewModel.getSelectedAlbum == null
-          ? Center(
+            body: AlbumDetailScreen(album: widget.viewModel.getSelectedAlbum!),
+          )
+        : Scaffold(
+            appBar: AppBarWidget(
+              title: Text(AppLocalizations.of(context)!.myAlbums,
+                  style: Theme.of(context).textTheme.headlineSmall),
+              centerTitle: false,
+            ),
+            body: Center(
               child: ListView.separated(
                 itemCount: widget.albums.length,
                 padding: albumListPadding,
@@ -89,8 +91,7 @@ class _AlbumsListScreenState extends State<AlbumsListScreen> {
                   );
                 },
               ),
-            )
-          : AlbumDetailScreen(album: widget.viewModel.getSelectedAlbum!),
-    );
+            ),
+          );
   }
 }

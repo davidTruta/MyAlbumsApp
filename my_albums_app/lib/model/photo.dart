@@ -16,4 +16,19 @@ class Photo {
   factory Photo.fromJson(Map<String, dynamic> json) => _$PhotoFromJson(json);
 
   Map<String, dynamic> toJson() => _$PhotoToJson(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is Photo &&
+        other.id == id &&
+        other.title == title &&
+        other.url == url &&
+        other.thumbnail == thumbnail &&
+        other.albumId == albumId;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }
