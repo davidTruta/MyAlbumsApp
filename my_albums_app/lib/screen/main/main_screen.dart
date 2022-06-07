@@ -6,9 +6,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 import '../albums/albums_screen.dart';
+import '../friends/friends_screen.dart';
+import '../news/news_screen.dart';
 import '../profile/profile_screen.dart';
+import '../question/temp_screen.dart';
 import '../splash/splash_screen.dart';
-import '../temp_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -33,9 +35,9 @@ class _MainScreenState extends State<MainScreen> {
         : TabBarWidget(
             screens: [
               {'screen': AlbumsScreen(), 'icon':const Icon(Icons.search), 'label': Text(AppLocalizations.of(context)!.browse.toUpperCase())},
-              {'screen': const TempScreen(), 'icon':const Icon(Icons.emoji_emotions_outlined), 'label': Text(AppLocalizations.of(context)!.friends.toUpperCase())},
+              {'screen': const FriendsScreen(), 'icon':const Icon(Icons.emoji_emotions_outlined), 'label': Text(AppLocalizations.of(context)!.friends.toUpperCase())},
               const {'screen': TempScreen(), 'icon':Icon(Icons.question_mark), 'label': Text("??????")},
-              {'screen': const TempScreen(), 'icon':const Icon(Icons.newspaper), 'label': Text(AppLocalizations.of(context)!.news.toUpperCase())},
+              {'screen': const NewsScreen(), 'icon':const Icon(Icons.newspaper), 'label': Text(AppLocalizations.of(context)!.news.toUpperCase())},
               {'screen': const ProfileScreen(), 'icon':const Icon(Icons.account_circle_outlined), 'label': Text(AppLocalizations.of(context)!.profile.toUpperCase())},
             ],
           );

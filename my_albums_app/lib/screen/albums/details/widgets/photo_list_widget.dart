@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../model/photo.dart';
 import '../../../../theming/dimensions.dart';
-import '../photo_view_model.dart';
 
 class PhotoListWidget extends StatefulWidget {
   final int albumId;
-  final List<PhotoViewModel> photos;
+  final List<Photo> photos;
 
   const PhotoListWidget({Key? key, required this.albumId, required this.photos})
       : super(key: key);
@@ -48,7 +48,7 @@ class _PhotoListWidgetState extends State<PhotoListWidget> {
                   Radius.circular(10),
                 ),
                 child: Image.network(
-                  widget.photos[i].url,
+                  widget.photos[i].thumbnailUrl!,
                   loadingBuilder: (BuildContext context, Widget child,
                       ImageChunkEvent? loadingProgress) {
                     if (loadingProgress == null) return child;
@@ -58,7 +58,7 @@ class _PhotoListWidgetState extends State<PhotoListWidget> {
                 ),
               ),
               title: Text(
-                widget.photos[i].title,
+                widget.photos[i].title!,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleMedium,
               ),

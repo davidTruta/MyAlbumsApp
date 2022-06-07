@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/app_bar_widget.dart';
+import '../../widgets/app_bar_widget.dart';
 
 class TempScreen extends StatelessWidget {
   static const routeName = '/temp-screen';
@@ -19,7 +19,7 @@ class TempScreen extends StatelessWidget {
       body: Center(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          Text('Coming soon!'),
+          Text('Delete this :) !'),
         ],
       )),
     );

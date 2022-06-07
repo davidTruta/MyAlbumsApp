@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:my_albums_app/screen/albums/details/album_detail_screen.dart';
 import 'package:my_albums_app/screen/main/main_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:my_albums_app/screen/temp_screen.dart';
 import 'package:my_albums_app/theming/theme.dart';
 
 
@@ -28,9 +26,6 @@ class MyApp extends StatelessWidget {
       ],
       theme: myThemeData,
       home: const MainScreen(),
-      routes: {
-        TempScreen.routeName: (context) => const TempScreen(),
-      },
     );
   }
 }

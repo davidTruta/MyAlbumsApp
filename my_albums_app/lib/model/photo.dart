@@ -9,9 +9,9 @@ class Photo {
   int? albumId;
   String? title;
   String? url;
-  String? thumbnail;
+  String? thumbnailUrl;
 
-  Photo({this.id, this.albumId, this.title, this.url, this.thumbnail});
+  Photo({this.id, this.albumId, this.title, this.url, this.thumbnailUrl});
 
   factory Photo.fromJson(Map<String, dynamic> json) => _$PhotoFromJson(json);
 
@@ -25,7 +25,7 @@ class Photo {
         other.id == id &&
         other.title == title &&
         other.url == url &&
-        other.thumbnail == thumbnail &&
+        other.thumbnailUrl == thumbnailUrl &&
         other.albumId == albumId;
   }
 

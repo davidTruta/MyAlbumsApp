@@ -35,6 +35,10 @@ class PhotoViewModel {
     return _photo.url as String;
   }
 
+  String get thumbnailUrl {
+    return _photo.thumbnailUrl as String;
+  }
+
   @override
   operator==(Object other){
     return other is PhotoViewModel && other._photo == _photo;
