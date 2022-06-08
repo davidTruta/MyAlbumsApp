@@ -11,6 +11,7 @@ final ThemeData myThemeData = ThemeData(
     headlineMedium: headlineMediumTextStyle,
     headlineLarge: headlineLargeTextStyle,
     labelSmall: labelSmallTextStyle,
+    labelMedium: labelMediumTextStyle,
     titleMedium: titleMediumTextStyle,
   ),
   primaryColor: primaryColor,

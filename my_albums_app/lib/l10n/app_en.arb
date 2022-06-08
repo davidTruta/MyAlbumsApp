@@ -4,7 +4,7 @@
     "news": "news",
     "profile": "profile",
     "saveToFavorites": "Save to favorites",
-    "addAComment": "Add a Comment",
+    "addAComment": "Add a comment",
     "albumWithId": "Album with id",
     "photoWithId": "Photo with id",
     "myAlbums": "My Albums",
@@ -13,5 +13,7 @@
     "details": "Details",
     "photos": "Photos",
     "localAlbumsWereLoaded": "Local albums were loaded due to internet connection error",
-    "yourProfile": "Your Profile"
+    "yourProfile": "Your Profile",
+    "unknown": "Unknown",
+    "contactInfo": "Contact Info"
 }

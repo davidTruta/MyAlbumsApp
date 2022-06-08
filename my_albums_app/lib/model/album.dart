@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'album.g.dart';
@@ -7,8 +8,9 @@ class Album {
   int? id;
   int? userId;
   String? title;
+  Key? key;
 
-  Album({this.id, this.userId, this.title});
+  Album({this.id, this.userId, this.title, this.key});
 
   factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);
 

@@ -15,6 +15,12 @@ const smallVerticalDistance = SizedBox(
 const normalVerticalDistance = SizedBox(
   height: 20,
 );
+const largeVerticalDistance = SizedBox(
+  height: 30,
+);
+const xLargeVerticalDistance = SizedBox(
+  height: 35,
+);
 
 const dividerThickness = 0.7;
 
@@ -31,6 +37,12 @@ const photoListTilePadding = EdgeInsets.all(0);
 const albumListTileDistance = normalVerticalDistance;
 
 const circularProgressIndicatorBoxConstraint =
-    BoxConstraints(maxWidth: 50, maxHeight: 50);
+BoxConstraints(maxWidth: 50, maxHeight: 50);
 
 const tabIconMargin = EdgeInsets.only(bottom: 3);
+
+const contactInfoTextFieldPadding = EdgeInsets.symmetric(
+    vertical: 0, horizontal: smallPadding);
+
+const contactInfoPadding = EdgeInsets.symmetric(
+    vertical: 0, horizontal: normalPadding);

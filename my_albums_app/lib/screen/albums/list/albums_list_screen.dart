@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_albums_app/BLoC/photo_query_bloc.dart';
 import 'package:my_albums_app/screen/albums/album_view_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_albums_app/widgets/list_tile_widget.dart';
 
 import '../../../BLoC/bloc_provider.dart';
 import '../../../theming/dimensions.dart';
@@ -61,15 +62,8 @@ class _AlbumsListScreenState extends State<AlbumsListScreen> {
               return albumListTileDistance;
             },
             itemBuilder: (context, i) {
-              return ListTile(
-                iconColor: Theme.of(context).colorScheme.primary,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    color: Theme.of(context).colorScheme.outline,
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.circular(5),
-                ),
+              return ListTileWidget(
+                leadingIconData: Icons.photo_album_rounded,
                 onTap: () {
                   setState(() {
                     if (widget.viewModel.isEven(widget.albums[i].id)) {
@@ -79,13 +73,6 @@ class _AlbumsListScreenState extends State<AlbumsListScreen> {
                     }
                   });
                 },
-                leading: CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  child: Icon(
-                    Icons.photo_album_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
                 title: Text(
                   widget.albums[i].title,
                   overflow: TextOverflow.ellipsis,
@@ -93,7 +80,6 @@ class _AlbumsListScreenState extends State<AlbumsListScreen> {
                 ),
                 subtitle: Text(
                     '${AppLocalizations.of(context)!.albumWithId}: ${widget.albums[i].id}'),
-                trailing: const Icon(Icons.arrow_forward_ios),
               );
             },
           ),

@@ -4,7 +4,6 @@ import 'package:my_albums_app/screen/main/main_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_albums_app/theming/theme.dart';
 
-
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {

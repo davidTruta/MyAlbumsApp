@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   initState() {
     super.initState();
-    _timer = Timer(const Duration(seconds: 3), () => {setState(() {})});
+    _timer = Timer(const Duration(milliseconds: 2200), () => {setState(() {})});
   }
 
   @override

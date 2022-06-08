@@ -13,5 +13,7 @@
     "details": "Detalii",
     "photos": "Fotografii",
     "localAlbumsWereLoaded": "Din cauza unei erori de conectare la internet, au fost afisate albumele locale",
-    "yourProfile": "Profilul Tau"
+    "yourProfile": "Profilul Tau",
+    "unknown": "Necunoscut",
+    "contactInfo": "Info. de Contactare"
 }

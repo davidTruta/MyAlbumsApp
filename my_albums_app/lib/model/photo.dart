@@ -1,4 +1,5 @@
 
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'photo.g.dart';
@@ -10,8 +11,9 @@ class Photo {
   String? title;
   String? url;
   String? thumbnailUrl;
+  Key? key;
 
-  Photo({this.id, this.albumId, this.title, this.url, this.thumbnailUrl});
+  Photo({this.id, this.albumId, this.title, this.url, this.thumbnailUrl, this.key});
 
   factory Photo.fromJson(Map<String, dynamic> json) => _$PhotoFromJson(json);
 

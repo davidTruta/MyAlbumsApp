@@ -65,7 +65,6 @@ class AlbumDetailScreen extends StatelessWidget {
                       ),
                       normalVerticalDistance,
                       PhotoListWidget(
-                        albumId: album.id,
                         photos: photos,
                       )
                     ],

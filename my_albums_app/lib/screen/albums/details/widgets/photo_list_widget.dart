@@ -5,10 +5,9 @@ import '../../../../model/photo.dart';
 import '../../../../theming/dimensions.dart';
 
 class PhotoListWidget extends StatefulWidget {
-  final int albumId;
   final List<Photo> photos;
 
-  const PhotoListWidget({Key? key, required this.albumId, required this.photos})
+  const PhotoListWidget({Key? key, required this.photos})
       : super(key: key);
 
   @override
@@ -28,12 +27,14 @@ class _PhotoListWidgetState extends State<PhotoListWidget> {
       ],
     );
     return ListView(
+      key: const Key("outerListView"),
       physics: const ScrollPhysics(),
       shrinkWrap: true,
       children: [
         header,
         smallVerticalDistance,
         ListView.separated(
+          key: const Key("innerListView"),
           physics: const ScrollPhysics(),
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
@@ -52,8 +53,10 @@ class _PhotoListWidgetState extends State<PhotoListWidget> {
                   loadingBuilder: (BuildContext context, Widget child,
                       ImageChunkEvent? loadingProgress) {
                     if (loadingProgress == null) return child;
-                    return ConstrainedBox(constraints: circularProgressIndicatorBoxConstraint,
-                    child: const Center(child: CircularProgressIndicator()));
+                    return ConstrainedBox(
+                        constraints: circularProgressIndicatorBoxConstraint,
+                        child:
+                            const Center(child: CircularProgressIndicator()));
                   },
                 ),
               ),
@@ -69,7 +72,7 @@ class _PhotoListWidgetState extends State<PhotoListWidget> {
           },
           separatorBuilder: (BuildContext context, int index) {
             return const Divider(
-              thickness: 0.7,
+              thickness: dividerThickness,
             );
           },
         )
