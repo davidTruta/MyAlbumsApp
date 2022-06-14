@@ -15,11 +15,14 @@ const titleMediumTextStyle =
 
 const titleSmallTextStyle = TextStyle(fontSize: 14, color: subtitleColor);
 
-const labelSmallTextStyle =
-    TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: primaryColor);
+const labelSmallTextStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+    color: primaryColor,
+    letterSpacing: 0.01);
 
 const labelMediumTextStyle = TextStyle(
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: FontWeight.bold,
     fontFamily: "Nunito",
     color: onBackground);

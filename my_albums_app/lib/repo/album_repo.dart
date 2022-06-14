@@ -19,4 +19,18 @@ class AlbumRepo {
 
     return albums;
   }
+
+  Future<List<Album>> getLocalAlbums() async {
+    final prefs = await SharedPreferences.getInstance();
+    try {
+      final List<String>? albums = prefs.getStringList('albums');
+      return albums!.map((a) {
+        final args = a.split(",");
+        return Album(
+            id: int.parse(args[0]), userId: int.parse(args[1]), title: args[2]);
+      }).toList();
+    } catch (err) {
+      throw Exception("There are no local albums");
+    }
+  }
 }

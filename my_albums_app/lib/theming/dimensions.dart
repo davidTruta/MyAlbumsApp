@@ -21,6 +21,12 @@ const largeVerticalDistance = SizedBox(
 const xLargeVerticalDistance = SizedBox(
   height: 35,
 );
+const xxLargeVerticalDistance = SizedBox(
+  height: 45,
+);
+const xxxLargeVerticalDistance = SizedBox(
+  height: 55,
+);
 
 const dividerThickness = 0.7;
 
@@ -45,4 +51,4 @@ const contactInfoTextFieldPadding = EdgeInsets.symmetric(
     vertical: 0, horizontal: smallPadding);
 
 const contactInfoPadding = EdgeInsets.symmetric(
-    vertical: 0, horizontal: normalPadding);
+    vertical: 0, horizontal: xLargePadding);

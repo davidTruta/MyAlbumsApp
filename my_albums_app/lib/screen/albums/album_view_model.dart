@@ -25,7 +25,7 @@ class AlbumsViewModel {
     }
   }
 
-  Future<List<AlbumViewModel>> fetchAlbums() async {
+  Future<List<AlbumViewModel>> getAlbums() async {
     try {
       return (await _albumRepo.getAlbums())
           .map((a) => AlbumViewModel(a))
@@ -35,19 +35,13 @@ class AlbumsViewModel {
     }
   }
 
-  Future<List<AlbumViewModel>> fetchLocalAlbums() async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<List<AlbumViewModel>> getLocalAlbums() async {
     try {
-      final List<String>? albums = prefs.getStringList('albums');
-      return albums!.map((a) {
-        final args = a.split(",");
-        return AlbumViewModel(Album(
-            id: int.parse(args[0]),
-            userId: int.parse(args[1]),
-            title: args[2]));
-      }).toList();
+      return (await _albumRepo.getLocalAlbums())
+          .map((a) => AlbumViewModel(a))
+          .toList();
     } catch (err) {
-      throw Exception("There are no local albums");
+      rethrow;
     }
   }
 }

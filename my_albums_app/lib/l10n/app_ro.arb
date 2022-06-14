@@ -15,5 +15,16 @@
     "localAlbumsWereLoaded": "Din cauza unei erori de conectare la internet, au fost afisate albumele locale",
     "yourProfile": "Profilul Tau",
     "unknown": "Necunoscut",
-    "contactInfo": "Info. de Contactare"
+    "contactInfo": "Info. de Contactare",
+    "firstName": "Prenume",
+    "lastName": "Nume",
+    "emailAddress": "Adresa de Email",
+    "phoneNumber": "Nr. de telefon",
+    "streetAddress": "Strada",
+    "city": "Orasul",
+    "country": "Tara",
+    "zipCode": "Cod Postal",
+    "useMyLocation": "Foloseste locatia curenta",
+    "back": "Inapoi",
+    "apply": "Salveaza"
 }

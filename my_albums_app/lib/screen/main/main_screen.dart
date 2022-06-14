@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
               {'screen': const FriendsScreen(), 'icon':const Icon(Icons.emoji_emotions_outlined), 'label': Text(AppLocalizations.of(context)!.friends.toUpperCase())},
               const {'screen': TempScreen(), 'icon':Icon(Icons.question_mark), 'label': Text("??????")},
               {'screen': const NewsScreen(), 'icon':const Icon(Icons.newspaper), 'label': Text(AppLocalizations.of(context)!.news.toUpperCase())},
-              {'screen': const ProfileScreen(), 'icon':const Icon(Icons.account_circle_outlined), 'label': Text(AppLocalizations.of(context)!.profile.toUpperCase())},
+              {'screen': ProfileScreen(), 'icon':const Icon(Icons.account_circle_outlined), 'label': Text(AppLocalizations.of(context)!.profile.toUpperCase())},
             ],
           );
   }

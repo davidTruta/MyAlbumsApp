@@ -15,5 +15,16 @@
     "localAlbumsWereLoaded": "Local albums were loaded due to internet connection error",
     "yourProfile": "Your Profile",
     "unknown": "Unknown",
-    "contactInfo": "Contact Info"
+    "contactInfo": "Contact Info",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "emailAddress": "Email Address",
+    "phoneNumber": "Phone Number",
+    "streetAddress": "Street Address",
+    "city": "City",
+    "country": "Country",
+    "zipCode": "Zip Code",
+    "useMyLocation": "Use my location",
+    "back": "Back",
+    "apply": "Apply"
 }

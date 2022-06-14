@@ -16,13 +16,13 @@ class AlbumsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: viewModel.fetchAlbums(),
+      future: viewModel.getAlbums(),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.waiting) {
           List<AlbumViewModel> albums;
           if (snapshot.error != null) {
             return FutureBuilder(
-              future: viewModel.fetchLocalAlbums(),
+              future: viewModel.getLocalAlbums(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.waiting) {
                   if (snapshot.error != null) {
@@ -34,7 +34,7 @@ class AlbumsScreen extends StatelessWidget {
                       albums: albums,
                       viewModel: viewModel,
                     );
-                  } else{
+                  } else {
                     Fluttertoast.showToast(msg: "There are no local albums");
                     return Container();
                   }

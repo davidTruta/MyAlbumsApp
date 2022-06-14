@@ -46,7 +46,7 @@ void main() {
     });
 
     test('fetchAlbums() test case: should fetch albums from client', () async {
-      List<AlbumViewModel> actualAlbums = await albumsViewModel!.fetchAlbums();
+      List<AlbumViewModel> actualAlbums = await albumsViewModel!.getAlbums();
 
       expect(actualAlbums.length, 100);
 
@@ -57,7 +57,7 @@ void main() {
     test('fetchAlbums() test case: should throw an exception (no internet connection / unable to fetch)', () async {
       albumsViewModel = AlbumsViewModel(AlbumRepo(ClientApi(Dio(), baseUrl: "noInternet/unableToRetrieve")));
 
-      expect(() => albumsViewModel!.fetchAlbums(), throwsA(isA<Exception>()));
+      expect(() => albumsViewModel!.getAlbums(), throwsA(isA<Exception>()));
     });
 
     test(
@@ -66,10 +66,10 @@ void main() {
       albumsViewModel = AlbumsViewModel(AlbumRepo(ClientApi(Dio())));
 
       // in order to have some local albums stored:
-      await albumsViewModel!.fetchAlbums();
+      await albumsViewModel!.getAlbums();
 
       List<AlbumViewModel> actualAlbums =
-          await albumsViewModel!.fetchLocalAlbums();
+          await albumsViewModel!.getLocalAlbums();
 
       expect(actualAlbums.isNotEmpty, true);
       expect(actualAlbums.firstWhere((element) => element.id == 13), albumWithId13);
@@ -83,7 +83,7 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       prefs.clear();
 
-      expect(() => albumsViewModel!.fetchLocalAlbums(), throwsA(isA<Exception>()));
+      expect(() => albumsViewModel!.getLocalAlbums(), throwsA(isA<Exception>()));
     });
   });
 }
