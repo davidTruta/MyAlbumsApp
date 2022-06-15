@@ -90,6 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     builder: (context) => ContactInfoScreen(
                       profileViewModel: profileViewModel,
                       updateProfile: rebuild,
+                      profile: profile,
                     ),
                   ));
                 },
