@@ -56,3 +56,6 @@ const contactInfoTextFieldPadding = EdgeInsets.symmetric(
 
 const contactInfoPadding = EdgeInsets.symmetric(
     vertical: 0, horizontal: xLargePadding);
+
+const leftFormFieldPadding = EdgeInsets.only(right: 10);
+const rightFormFieldPadding = EdgeInsets.only(left: 10);

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_albums_app/repo/profile_repo.dart';
 import 'package:my_albums_app/screen/profile/contact_info/contact_info_screen.dart';
-import 'package:my_albums_app/screen/profile/profile_view_model.dart';
+import 'package:my_albums_app/screen/profile/your_profile/profile_view_model.dart';
 import 'package:my_albums_app/theming/dimensions.dart';
 import 'package:my_albums_app/widgets/app_bar_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_albums_app/widgets/list_tile_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../model/profile.dart';
+import '../../../model/profile.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -17,11 +18,16 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final ProfileViewModel profileViewModel = ProfileViewModel(ProfileRepo());
+  final ProfileViewModel profileViewModel =
+      ProfileViewModel(ProfileRepo(SharedPreferences.getInstance()));
 
-  void rebuild() {
-    setState(() {});
+  @override
+  initState(){
+    super.initState();
+    //TODO replace with input
+    profileViewModel.fetchProfileStateData();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +39,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
           actions: [
             IconButton(onPressed: () {}, icon: const Icon(Icons.notifications))
           ]),
-      body: FutureBuilder(
-        future: profileViewModel.getProfile(),
+      body: StreamBuilder(
+        stream: profileViewModel.getProfileStateData, //TODO replace with output
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else {
-            if (snapshot.error != null) {
+            final profileStateData = snapshot.data as ProfileStateData;
+
+            if (profileStateData.profileState == ProfileState.unknown) {
               return _buildUser(context);
             } else {
-              return _buildUser(context, profile: snapshot.data);
+              return _buildUser(context, profile: profileStateData.profile);
             }
           }
         },
@@ -88,11 +96,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ContactInfoScreen(
-                      profileViewModel: profileViewModel,
-                      updateProfile: rebuild,
                       profile: profile,
                     ),
-                  ));
+                  )).then((value) {
+                    //TODO replace with input
+                    profileViewModel.refreshProfileStateData();
+                  });
                 },
               )
             ],

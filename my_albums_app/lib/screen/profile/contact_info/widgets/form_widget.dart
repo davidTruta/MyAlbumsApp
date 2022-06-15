@@ -17,7 +17,7 @@ class FormWidget extends StatelessWidget {
           children: [
             Flexible(
               child: Padding(
-                padding: const EdgeInsets.only(right: 10),
+                padding: leftFormFieldPadding,
                 child: TextFieldWidget(
                   focusNode: fields['firstName']!['focusNode'],
                   toFocus: fields['lastName']!['focusNode'],
@@ -29,7 +29,7 @@ class FormWidget extends StatelessWidget {
             ),
             Flexible(
               child: Padding(
-                padding: const EdgeInsets.only(left: 10),
+                padding: rightFormFieldPadding,
                 child: TextFieldWidget(
                   focusNode: fields['lastName']!['focusNode'],
                   toFocus: fields['email']!['focusNode'],
@@ -72,7 +72,7 @@ class FormWidget extends StatelessWidget {
           children: [
             Flexible(
               child: Padding(
-                padding: const EdgeInsets.only(right: 10),
+                padding: leftFormFieldPadding,
                 child: TextFieldWidget(
                   focusNode: fields['city']!['focusNode'],
                   toFocus: fields['country']!['focusNode'],
@@ -84,7 +84,7 @@ class FormWidget extends StatelessWidget {
             ),
             Flexible(
               child: Padding(
-                padding: const EdgeInsets.only(left: 10),
+                padding: rightFormFieldPadding,
                 child: TextFieldWidget(
                   focusNode: fields['country']!['focusNode'],
                   toFocus: fields['zipCode']!['focusNode'],
@@ -93,7 +93,7 @@ class FormWidget extends StatelessWidget {
                   title: AppLocalizations.of(context)!.country.toUpperCase(),
                 ),
               ),
-            )
+            ),
           ],
         ),
         smallVerticalDistance,

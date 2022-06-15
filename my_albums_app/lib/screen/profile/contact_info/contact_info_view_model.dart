@@ -1,18 +1,33 @@
-import 'package:my_albums_app/repo/profile_repo.dart';
+import 'dart:async';
 
-import '../../model/profile.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:location/location.dart' as coordinates;
+import 'package:rxdart/rxdart.dart';
 
-class ProfileViewModel {
+import '../../../model/profile.dart';
+import '../../../repo/profile_repo.dart';
+
+
+
+
+class ContactInfoViewModel {
   final ProfileRepo _profileRepo;
+  final Subject<Future<Profile?>> _controller = BehaviorSubject();
 
-  ProfileViewModel(this._profileRepo);
+  ContactInfoViewModel(this._profileRepo);
 
-  Future<Profile> getProfile() async {
-    return await _profileRepo.getProfile();
+  Future<bool> saveProfile(Profile profile) {
+      return _profileRepo.saveProfile(profile);
   }
 
-  Future<void> saveProfile(Profile profile) async {
-    return await _profileRepo.saveProfile(profile);
+  Future<Placemark> getCurrentLocationAddress() async {
+    coordinates.Location location = coordinates.Location();
+    return location.getLocation().then((data) {
+      return placemarkFromCoordinates(data.latitude!, data.longitude!)
+          .then((placeMarks) {
+        return placeMarks[0];
+      });
+    });
   }
 
   void _validateField(String key, String val, RegExp regExp, String msg,
