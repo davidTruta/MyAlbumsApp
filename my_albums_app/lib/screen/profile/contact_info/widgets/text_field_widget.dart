@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:my_albums_app/screen/profile/contact_info/contact_info_view_model.dart';
 
 import '../../../../theming/dimensions.dart';
-
 
 class TextFieldWidget extends StatefulWidget {
   final TextInputType? textInputType;
   final String title;
   final TextEditingController controller;
-  final Map<String, dynamic> validationErrors;
+  final MyString validationErrors;
   final FocusNode? focusNode;
   final FocusNode? toFocus;
 
@@ -29,7 +29,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   InputDecoration _getInputDecoration([String? title]) {
     final border = UnderlineInputBorder(
       borderSide: BorderSide(
-          color: widget.validationErrors['validationError'] == ''
+          color: widget.validationErrors.value == ''
               ? Theme.of(context).primaryColor
               : Theme.of(context).errorColor,
           width: textFieldBorderThickness),
@@ -41,13 +41,20 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         label: title != null
             ? Text(
                 title,
-                style: widget.validationErrors['validationError'] == ''
+                style: widget.validationErrors.value == ''
                     ? Theme.of(context).textTheme.labelMedium
                     : TextStyle(color: Theme.of(context).errorColor),
               )
             : null,
         enabledBorder: border,
         focusedBorder: border);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (widget.focusNode != null) widget.focusNode!.dispose();
+    if (widget.toFocus != null) widget.toFocus!.dispose();
   }
 
   @override
@@ -67,19 +74,18 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           focusNode: widget.focusNode,
           onChanged: (str) {
             setState(() {
-              widget.validationErrors['validationError'] = '';
+              widget.validationErrors.value = '';
             });
           },
-
         ),
-        if (widget.validationErrors['validationError'] != '')
+        if (widget.validationErrors.value != '')
           IgnorePointer(
             ignoring: true,
             child: Column(
               children: [
                 normalVerticalDistance,
                 Text(
-                  widget.validationErrors['validationError']!,
+                  widget.validationErrors.value,
                   style: TextStyle(
                     color: Theme.of(context).errorColor,
                     fontSize: 16,

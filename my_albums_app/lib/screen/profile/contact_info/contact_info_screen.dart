@@ -5,7 +5,6 @@ import 'package:my_albums_app/screen/profile/contact_info/contact_info_view_mode
 import 'package:my_albums_app/widgets/app_bar_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../model/address.dart';
 import '../../../model/profile.dart';
 import '../../../theming/dimensions.dart';
 import 'widgets/form_widget.dart';
@@ -20,101 +19,34 @@ class ContactInfoScreen extends StatefulWidget {
 }
 
 class _ContactInfoScreenState extends State<ContactInfoScreen> {
-  ContactInfoViewModel contactInfoViewModel =
-      ContactInfoViewModel(ProfileRepo(SharedPreferences.getInstance()));
-
-  bool isLoading = false;
-  late final Map<String, Map<String, dynamic>> _fields;
+  ContactInfoViewModel contactInfoViewModel = ContactInfoViewModel(
+      ProfileRepo(SharedPreferences.getInstance()), Input());
+  late Map<FieldKeys, MyField> _fields;
 
   @override
   initState() {
-    super.initState();
     _fields = {
-      'firstName': {
-        'controller': TextEditingController()
-          ..text = widget.profile == null ? '' : widget.profile!.firstName!,
-        'validationError': '',
-      },
-      'lastName': {
-        'controller': TextEditingController()
-          ..text = widget.profile == null ? '' : widget.profile!.lastName!,
-        'validationError': '',
-      },
-      'email': {
-        'controller': TextEditingController()
-          ..text = widget.profile == null ? '' : widget.profile!.email!,
-        'validationError': '',
-      },
-      'phone': {
-        'controller': TextEditingController()
-          ..text = widget.profile == null ? '' : widget.profile!.phone!,
-        'validationError': '',
-      },
-      'street': {
-        'controller': TextEditingController()
-          ..text =
-              widget.profile == null ? '' : widget.profile!.address!.street!,
-        'validationError': '',
-      },
-      'city': {
-        'controller': TextEditingController()
-          ..text = widget.profile == null ? '' : widget.profile!.address!.city!,
-        'validationError': '',
-      },
-      'country': {
-        'controller': TextEditingController()
-          ..text =
-              widget.profile == null ? '' : widget.profile!.address!.country!,
-        'validationError': '',
-      },
-      'zipCode': {
-        'controller': TextEditingController()
-          ..text =
-              widget.profile == null ? '' : widget.profile!.address!.zipCode!,
-        'validationError': '',
-      },
+      FieldKeys.firstName: MyField(
+          focusNode: FocusNode(), initialValue: widget.profile?.firstName),
+      FieldKeys.lastName: MyField(
+          focusNode: FocusNode(), initialValue: widget.profile?.lastName),
+      FieldKeys.email:
+          MyField(focusNode: FocusNode(), initialValue: widget.profile?.email),
+      FieldKeys.phone:
+          MyField(focusNode: FocusNode(), initialValue: widget.profile?.phone),
+      FieldKeys.street: MyField(
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.address?.street),
+      FieldKeys.city: MyField(
+          focusNode: FocusNode(), initialValue: widget.profile?.address?.city),
+      FieldKeys.country: MyField(
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.address?.country),
+      FieldKeys.zipCode: MyField(
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.address?.zipCode),
     };
-    _fields.forEach((key, value) {
-      _fields[key]!.putIfAbsent('focusNode', () => FocusNode());
-    });
-  }
-
-  @override
-  dispose() {
-    _fields.forEach((key, value) {
-      _fields[key]!['focusNode'].dispose();
-    });
-    super.dispose();
-  }
-
-  Future<bool> applyChanges() {
-    bool valid = true;
-    setState(() {
-      contactInfoViewModel
-          .validateForm(_fields
-              .map((key, value) => MapEntry(key, value['controller'].text)))
-          .forEach((key, value) {
-        if (value != '') {
-          valid = false;
-          _fields[key]!['validationError'] = value;
-          _fields[key]!['controller'].clear();
-        }
-      });
-    });
-    if (!valid) return Future(() => false);
-    return contactInfoViewModel.saveProfile(Profile(
-      id: 1,
-      firstName: _fields['firstName']!['controller'].text,
-      lastName: _fields['lastName']!['controller'].text,
-      email: _fields['email']!['controller'].text,
-      phone: _fields['phone']!['controller'].text,
-      address: Address(
-          id: 1,
-          street: _fields['street']!['controller'].text,
-          country: _fields['country']!['controller'].text,
-          city: _fields['city']!['controller'].text,
-          zipCode: _fields['zipCode']!['controller'].text),
-    ));
+    super.initState();
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
@@ -129,24 +61,21 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
         child: Text(AppLocalizations.of(context)!.back),
       ),
       actions: [
-        isLoading == false
-            ? TextButton(
+        StreamBuilder(
+            stream: contactInfoViewModel.output.applyChangesData,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data == true) {
+                WidgetsBinding.instance.addPostFrameCallback(
+                  (_) => Navigator.of(context).pop(),
+                );
+              }
+              return TextButton(
                 onPressed: () {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  applyChanges().then((value) {
-                    if (value) Navigator.of(context).pop();
-                    setState(() {
-                      isLoading = false;
-                    });
-                  });
+                  contactInfoViewModel.input.load.add(_fields);
                 },
                 child: Text(AppLocalizations.of(context)!.apply),
-              )
-            : const Center(
-                child: CircularProgressIndicator(),
-              )
+              );
+            })
       ],
     );
   }
@@ -159,9 +88,13 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
         padding: albumListPadding,
         children: [
           normalVerticalDistance,
-          FormWidget(
-            fields: _fields,
-          ),
+          StreamBuilder(
+              stream: contactInfoViewModel.output.applyChangesData,
+              builder: (context, snapshot) {
+                return FormWidget(
+                  fields: _fields,
+                );
+              }),
           largeVerticalDistance,
           Align(
               child: ElevatedButton(
@@ -173,7 +106,7 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
             onPressed: () {
               setState(() {
                 contactInfoViewModel.getCurrentLocationAddress().then((place) {
-                  _fields['street']!['validationError'] = '';
+                  /* _fields['street']!['validationError'] = '';
                   _fields['city']!['validationError'] = '';
                   _fields['country']!['validationError'] = '';
                   _fields['zipCode']!['validationError'] = '';
@@ -181,7 +114,7 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
                   _fields['street']!['controller'].text = place.street;
                   _fields['city']!['controller'].text = place.locality;
                   _fields['country']!['controller'].text = place.country;
-                  _fields['zipCode']!['controller'].text = place.postalCode;
+                  _fields['zipCode']!['controller'].text = place.postalCode;*/
                 });
               });
             },

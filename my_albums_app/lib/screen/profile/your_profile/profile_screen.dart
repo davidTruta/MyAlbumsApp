@@ -19,18 +19,12 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileViewModel profileViewModel =
-      ProfileViewModel(ProfileRepo(SharedPreferences.getInstance()));
+      ProfileViewModel(ProfileRepo(SharedPreferences.getInstance()), Input());
 
   @override
   initState() {
     super.initState();
-    profileViewModel.input.load();
-  }
-
-  @override
-  dispose() {
-    super.dispose();
-    profileViewModel.dispose();
+    profileViewModel.input.load.add(true);
   }
 
   @override
@@ -44,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             IconButton(onPressed: () {}, icon: const Icon(Icons.notifications))
           ]),
       body: StreamBuilder(
-        stream: profileViewModel.output.getProfileStateData,
+        stream: profileViewModel.output.data,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -105,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ))
                       .then((value) {
-                    profileViewModel.input.load();
+                    profileViewModel.input.load.add(true);
                   });
                 },
               )
