@@ -4,7 +4,7 @@ import 'package:my_albums_app/BLoC/bloc.dart';
 
 import '../model/photo.dart';
 
-class PhotoBloc implements Bloc{
+class PhotoBloc implements Bloc {
   // 1
   final _photoController = StreamController<Photo>();
 

@@ -22,12 +22,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ProfileViewModel(ProfileRepo(SharedPreferences.getInstance()));
 
   @override
-  initState(){
+  initState() {
     super.initState();
-    //TODO replace with input
-    profileViewModel.fetchProfileStateData();
+    profileViewModel.input.load();
   }
 
+  @override
+  dispose() {
+    super.dispose();
+    profileViewModel.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             IconButton(onPressed: () {}, icon: const Icon(Icons.notifications))
           ]),
       body: StreamBuilder(
-        stream: profileViewModel.getProfileStateData, //TODO replace with output
+        stream: profileViewModel.output.getProfileStateData,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -94,13 +98,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         "${AppLocalizations.of(context)!.emailAddress}: ${profile.email}"),
                 leadingIconData: Icons.perm_contact_calendar_rounded,
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
                     builder: (context) => ContactInfoScreen(
                       profile: profile,
                     ),
-                  )).then((value) {
-                    //TODO replace with input
-                    profileViewModel.refreshProfileStateData();
+                  ))
+                      .then((value) {
+                    profileViewModel.input.load();
                   });
                 },
               )
