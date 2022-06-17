@@ -2,17 +2,31 @@ import 'dart:async';
 
 import 'package:my_albums_app/repo/profile_repo.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:rxdart/subjects.dart';
 
 import '../../../model/profile.dart';
 
-enum ProfileState { unknown, user }
+class ProfileData {
+  late final String circularAvatarText;
+  late final String fullName;
+  late final String emailAddress;
+  late final String memberSince;
+  Profile? profile;
 
-class ProfileStateData {
-  final ProfileState profileState;
-  final Profile? profile;
-
-  ProfileStateData(this.profileState, [this.profile]);
+  ProfileData({
+    this.profile,
+  }){
+    if(profile == null){
+      circularAvatarText = "?";
+      fullName = 'Unknown'; //TODO translate, but how?
+      emailAddress = "";
+      memberSince = "";
+    }else{
+      circularAvatarText = profile!.firstName![0];
+      fullName = "${profile!.firstName!} ${profile!.lastName!}";
+      emailAddress = "Email address: ${profile!.email}";
+      memberSince = "Member since ${profile!.year}";
+    }
+  }
 }
 
 class Input {
@@ -20,7 +34,7 @@ class Input {
 }
 
 class Output {
-  final Stream<ProfileStateData> data;
+  final Stream<ProfileData> data;
 
   Output(this.data);
 }
@@ -33,9 +47,7 @@ class ProfileViewModel {
   ProfileViewModel(this._profileRepo, this.input) {
     output = Output(
       input.load.flatMap((_) => _profileRepo.getProfile().asStream().map(
-            (profile) => profile == null
-                ? ProfileStateData(ProfileState.unknown)
-                : ProfileStateData(ProfileState.user, profile),
+            (profile) => ProfileData(profile: profile)
           )),
     );
   }

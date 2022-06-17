@@ -26,5 +26,6 @@
     "zipCode": "Zip Code",
     "useMyLocation": "Use my location",
     "back": "Back",
-    "apply": "Apply"
+    "apply": "Apply",
+    "required": "required"
 }

@@ -1,24 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:my_albums_app/screen/profile/contact_info/contact_info_view_model.dart';
+import 'package:my_albums_app/screen/profile/contact_info/validator.dart';
 
 import '../../../../theming/dimensions.dart';
 
 class TextFieldWidget extends StatefulWidget {
-  final TextInputType? textInputType;
-  final String title;
-  final TextEditingController controller;
-  final MyString validationErrors;
-  final FocusNode? focusNode;
-  final FocusNode? toFocus;
+  final MyField field;
 
-  const TextFieldWidget(
-      {Key? key,
-      required this.controller,
-      required this.validationErrors,
-      required this.focusNode,
-      this.textInputType,
-      required this.title,
-      this.toFocus})
+  const TextFieldWidget.fromField({Key? key, required this.field})
       : super(key: key);
 
   @override
@@ -29,7 +20,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   InputDecoration _getInputDecoration([String? title]) {
     final border = UnderlineInputBorder(
       borderSide: BorderSide(
-          color: widget.validationErrors.value == ''
+          color: widget.field.error == ValidationError.none
               ? Theme.of(context).primaryColor
               : Theme.of(context).errorColor,
           width: textFieldBorderThickness),
@@ -41,7 +32,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         label: title != null
             ? Text(
                 title,
-                style: widget.validationErrors.value == ''
+                style: widget.field.error == ValidationError.none
                     ? Theme.of(context).textTheme.labelMedium
                     : TextStyle(color: Theme.of(context).errorColor),
               )
@@ -50,11 +41,14 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         focusedBorder: border);
   }
 
+  String _buildStringFromValidationError(BuildContext context){
+    return AppLocalizations.of(context)!.required;
+  }
+
   @override
   void dispose() {
     super.dispose();
-    if (widget.focusNode != null) widget.focusNode!.dispose();
-    if (widget.toFocus != null) widget.toFocus!.dispose();
+    widget.field.focusNode?.dispose();
   }
 
   @override
@@ -62,30 +56,31 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     return Stack(
       children: [
         TextField(
-          controller: widget.controller,
-          keyboardType: widget.textInputType,
+          controller: widget.field.controller,
+          keyboardType: widget.field.textInputType,
           style: Theme.of(context).textTheme.labelSmall,
-          decoration: _getInputDecoration(widget.title),
+          decoration: _getInputDecoration(widget.field.title),
           onEditingComplete: () {
-            if (widget.toFocus != null) {
-              widget.toFocus!.requestFocus();
+            if (widget.field.toFocus != null) {
+              widget.field.toFocus!.requestFocus();
             }
           },
-          focusNode: widget.focusNode,
+          focusNode: widget.field.focusNode,
           onChanged: (str) {
             setState(() {
-              widget.validationErrors.value = '';
+              widget.field.error = ValidationError.none;
             });
           },
         ),
-        if (widget.validationErrors.value != '')
+        if (widget.field.error != ValidationError.none)
           IgnorePointer(
             ignoring: true,
             child: Column(
               children: [
                 normalVerticalDistance,
                 Text(
-                  widget.validationErrors.value,
+                  _buildStringFromValidationError(context)
+                  ,
                   style: TextStyle(
                     color: Theme.of(context).errorColor,
                     fontSize: 16,

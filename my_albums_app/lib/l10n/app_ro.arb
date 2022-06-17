@@ -26,5 +26,7 @@
     "zipCode": "Cod Postal",
     "useMyLocation": "Foloseste locatia curenta",
     "back": "Inapoi",
-    "apply": "Salveaza"
+    "apply": "Salveaza",
+    "required": "necesar"
+
 }

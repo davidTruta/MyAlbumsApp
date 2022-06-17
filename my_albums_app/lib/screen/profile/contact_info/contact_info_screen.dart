@@ -27,26 +27,81 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
   initState() {
     _fields = {
       FieldKeys.firstName: MyField(
-          focusNode: FocusNode(), initialValue: widget.profile?.firstName),
+        key: FieldKeys.firstName,
+        textInputType: TextInputType.text,
+        initialValue: widget.profile?.firstName,
+      ),
       FieldKeys.lastName: MyField(
-          focusNode: FocusNode(), initialValue: widget.profile?.lastName),
-      FieldKeys.email:
-          MyField(focusNode: FocusNode(), initialValue: widget.profile?.email),
-      FieldKeys.phone:
-          MyField(focusNode: FocusNode(), initialValue: widget.profile?.phone),
+          key: FieldKeys.lastName,
+          textInputType: TextInputType.text,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.lastName),
+      FieldKeys.email: MyField(
+          key: FieldKeys.email,
+          textInputType: TextInputType.emailAddress,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.email),
+      FieldKeys.phone: MyField(
+          key: FieldKeys.phone,
+          textInputType: TextInputType.phone,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.phone),
       FieldKeys.street: MyField(
+          key: FieldKeys.street,
+          textInputType: TextInputType.streetAddress,
           focusNode: FocusNode(),
           initialValue: widget.profile?.address?.street),
       FieldKeys.city: MyField(
-          focusNode: FocusNode(), initialValue: widget.profile?.address?.city),
+          key: FieldKeys.city,
+          textInputType: TextInputType.text,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.address?.city),
       FieldKeys.country: MyField(
+          key: FieldKeys.country,
+          textInputType: TextInputType.text,
           focusNode: FocusNode(),
           initialValue: widget.profile?.address?.country),
       FieldKeys.zipCode: MyField(
+          key: FieldKeys.zipCode,
+          textInputType: TextInputType.number,
           focusNode: FocusNode(),
           initialValue: widget.profile?.address?.zipCode),
     };
+    print('initS');
+    contactInfoViewModel.output.changesApplied.listen((value) {
+      print('listen');
+      if (value) {
+        Navigator.of(context).pop();
+      }
+    });
     super.initState();
+  }
+
+  void _setTitlesAndToFocus(BuildContext context) {
+    _fields[FieldKeys.firstName]?.title =
+        AppLocalizations.of(context)!.firstName.toUpperCase();
+    _fields[FieldKeys.firstName]?.toFocus =
+        _fields[FieldKeys.lastName]?.focusNode;
+    _fields[FieldKeys.lastName]?.title =
+        AppLocalizations.of(context)!.lastName.toUpperCase();
+    _fields[FieldKeys.lastName]?.toFocus = _fields[FieldKeys.email]?.focusNode;
+    _fields[FieldKeys.email]?.title =
+        AppLocalizations.of(context)!.emailAddress.toUpperCase();
+    _fields[FieldKeys.email]?.toFocus = _fields[FieldKeys.phone]?.focusNode;
+    _fields[FieldKeys.phone]?.title =
+        AppLocalizations.of(context)!.phoneNumber.toUpperCase();
+    _fields[FieldKeys.phone]?.toFocus = _fields[FieldKeys.street]?.focusNode;
+    _fields[FieldKeys.street]?.title =
+        AppLocalizations.of(context)!.streetAddress.toUpperCase();
+    _fields[FieldKeys.street]?.toFocus = _fields[FieldKeys.city]?.focusNode;
+    _fields[FieldKeys.city]?.title =
+        AppLocalizations.of(context)!.city.toUpperCase();
+    _fields[FieldKeys.city]?.toFocus = _fields[FieldKeys.country]?.focusNode;
+    _fields[FieldKeys.country]?.title =
+        AppLocalizations.of(context)!.country.toUpperCase();
+    _fields[FieldKeys.country]?.toFocus = _fields[FieldKeys.zipCode]?.focusNode;
+    _fields[FieldKeys.zipCode]?.title =
+        AppLocalizations.of(context)!.zipCode.toUpperCase();
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
@@ -61,27 +116,21 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
         child: Text(AppLocalizations.of(context)!.back),
       ),
       actions: [
-        StreamBuilder(
-            stream: contactInfoViewModel.output.applyChangesData,
-            builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data == true) {
-                WidgetsBinding.instance.addPostFrameCallback(
-                  (_) => Navigator.of(context).pop(),
-                );
-              }
-              return TextButton(
-                onPressed: () {
-                  contactInfoViewModel.input.load.add(_fields);
-                },
-                child: Text(AppLocalizations.of(context)!.apply),
-              );
-            })
+        TextButton(
+          onPressed: () {
+            print('pressed');
+            contactInfoViewModel.input.applyChanges.add(_fields);
+          },
+          child: Text(AppLocalizations.of(context)!.apply),
+        )
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    _setTitlesAndToFocus(context);
+    print('building');
     return Scaffold(
       appBar: _buildAppBar(context),
       body: ListView(
@@ -89,9 +138,11 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
         children: [
           normalVerticalDistance,
           StreamBuilder(
-              stream: contactInfoViewModel.output.applyChangesData,
+              stream: contactInfoViewModel.output.changesApplied,
               builder: (context, snapshot) {
+                print('stremBldr');
                 return FormWidget(
+                  contactInfoViewModel: contactInfoViewModel,
                   fields: _fields,
                 );
               }),
@@ -105,17 +156,7 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
                 visualDensity: VisualDensity.compact),
             onPressed: () {
               setState(() {
-                contactInfoViewModel.getCurrentLocationAddress().then((place) {
-                  /* _fields['street']!['validationError'] = '';
-                  _fields['city']!['validationError'] = '';
-                  _fields['country']!['validationError'] = '';
-                  _fields['zipCode']!['validationError'] = '';
-
-                  _fields['street']!['controller'].text = place.street;
-                  _fields['city']!['controller'].text = place.locality;
-                  _fields['country']!['controller'].text = place.country;
-                  _fields['zipCode']!['controller'].text = place.postalCode;*/
-                });
+                contactInfoViewModel.input.fetchLocation.add(true);
               });
             },
             child: Text(

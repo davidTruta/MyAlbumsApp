@@ -45,20 +45,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
-            final profileStateData = snapshot.data as ProfileStateData;
-
-            if (profileStateData.profileState == ProfileState.unknown) {
-              return _buildUser(context);
-            } else {
-              return _buildUser(context, profile: profileStateData.profile);
-            }
+            return _buildUser(context, snapshot.data as ProfileData);
           }
         },
       ),
     );
   }
 
-  Widget _buildUser(BuildContext context, {Profile? profile}) {
+  Widget _buildUser(BuildContext context, ProfileData profileData) {
     return SingleChildScrollView(
       child: Padding(
         padding: albumListPadding,
@@ -72,30 +66,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 minRadius: 40.0,
                 child: Text(
-                  profile == null ? "?" : profile.firstName![0],
+                  profileData.circularAvatarText,
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
               ),
               normalVerticalDistance,
               Text(
-                profile == null
-                    ? AppLocalizations.of(context)!.unknown
-                    : "${profile.firstName} ${profile.lastName}",
+                profileData.fullName,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
+              Text(profileData.memberSince,style: Theme.of(context).textTheme.titleSmall,),
+
               xLargeVerticalDistance,
               ListTileWidget(
                 title: Text(AppLocalizations.of(context)!.contactInfo),
-                subtitle: profile == null
-                    ? null
-                    : Text(
-                        "${AppLocalizations.of(context)!.emailAddress}: ${profile.email}"),
+                subtitle: Text(profileData.emailAddress),
                 leadingIconData: Icons.perm_contact_calendar_rounded,
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
                     builder: (context) => ContactInfoScreen(
-                      profile: profile,
+                      profile: profileData.profile,
                     ),
                   ))
                       .then((value) {

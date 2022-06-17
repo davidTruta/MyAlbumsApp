@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart' as coordinates;
+import 'package:my_albums_app/screen/profile/contact_info/validator.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../model/address.dart';
 import '../../../model/profile.dart';
@@ -21,31 +21,49 @@ enum FieldKeys {
   zipCode,
 }
 
-class MyString {
-  String value = '';
-}
-
 class MyField {
+  late String title;
+  FieldKeys? key;
   final TextEditingController controller = TextEditingController();
-  late final MyString validationError;
-  final FocusNode focusNode;
+  ValidationError error = ValidationError.none;
+  final TextInputType? textInputType;
+  late final FocusNode? focusNode;
+  FocusNode? toFocus;
 
-  MyField({required this.focusNode, String? initialValue}) {
-    validationError = MyString();
+  MyField(
+      {this.textInputType,
+      this.toFocus,
+      this.focusNode,
+      String? initialValue,
+      this.key}) {
     if (initialValue != null) {
       controller.text = initialValue;
     }
   }
+
+  String get getText {
+    return controller.text;
+  }
+
+  void setText(String text) {
+    controller.text = text;
+  }
 }
 
 class Input {
-  final Subject<Map<FieldKeys, MyField>> load = BehaviorSubject();
+  final Subject<Map<FieldKeys, MyField>> applyChanges = PublishSubject();
+  final Subject<bool> fetchLocation = PublishSubject();
 }
 
 class Output {
-  final Stream<bool> applyChangesData;
+  final Stream<bool> changesApplied;
+  final Stream<Placemark> fetchedLocation;
+  ///final Stream<bool> changesSucceeded;
 
-  Output({required this.applyChangesData});
+  Output({
+    required this.changesApplied,
+    required this.fetchedLocation,
+  }); ///required this.changesSucceeded});
 }
 
 class ContactInfoViewModel {
@@ -54,67 +72,55 @@ class ContactInfoViewModel {
   late final Output output;
 
   ContactInfoViewModel(this._profileRepo, this.input) {
+    final stream = input.applyChanges.flatMap((field) => _applyChanges(field));
     output = Output(
-      applyChangesData: input.load.flatMap((field) => applyChanges(field)),
+      changesApplied: stream,
+      fetchedLocation: input.fetchLocation.flatMap((_) => _getCurrentLocationAddress()),
+      /// changesSucceeded: stream,
     );
   }
 
-  Future<Placemark> getCurrentLocationAddress() {
+  Stream<Placemark> _getCurrentLocationAddress() {
     coordinates.Location location = coordinates.Location();
     return location.getLocation().then((data) {
       return placemarkFromCoordinates(data.latitude!, data.longitude!)
           .then((placeMarks) {
         return placeMarks[0];
       });
-    });
+    }).asStream();
   }
 
-  Stream<bool> applyChanges(Map<FieldKeys, MyField> fields) {
-    if (!validateForm(fields)) return Future(() => false).asStream();//TODO is this ok?
+  Stream<bool> _applyChanges(Map<FieldKeys, MyField> fields) {
+    print('applying!'); //TODO figure out why this is called twice
+    if (!_validateForm(fields)) return Stream.value(false);
     return _profileRepo
         .saveProfile(Profile(
-            id: 1,
-            firstName: fields[FieldKeys.firstName]!.controller.text,
-            lastName: fields[FieldKeys.lastName]!.controller.text,
-            email: fields[FieldKeys.email]!.controller.text,
-            phone: fields[FieldKeys.phone]!.controller.text,
+            firstName: fields[FieldKeys.firstName]!.getText,
+            lastName: fields[FieldKeys.lastName]!.getText,
+            email: fields[FieldKeys.email]!.getText,
+            phone: fields[FieldKeys.phone]!.getText,
+            year: DateTime.now().year,
             address: Address(
-              id: 1,
-              street: fields[FieldKeys.street]!.controller.text,
-              country: fields[FieldKeys.country]!.controller.text,
-              city: fields[FieldKeys.city]!.controller.text,
-              zipCode: fields[FieldKeys.zipCode]!.controller.text,
+              street: fields[FieldKeys.street]!.getText,
+              country: fields[FieldKeys.country]!.getText,
+              city: fields[FieldKeys.city]!.getText,
+              zipCode: fields[FieldKeys.zipCode]!.getText,
             )))
         .asStream();
   }
 
-  void _validateField(MyField field, RegExp validationRegExp, String errorMsg) {
-    if (field.controller.text.isEmpty) {
-      field.validationError.value = 'required';
-    } else if (!field.controller.text.contains(validationRegExp)) {
-      field.validationError.value = errorMsg;
-      field.controller.text = '';
-    } else {
-      field.validationError.value = '';
-    }
-  }
-
-  bool validateForm(Map<FieldKeys, MyField> fields) {
+  bool _validateForm(Map<FieldKeys, MyField> fields) {
     var result = true;
-    final letOnlyRegEx = RegExp(r'^[a-z ]+$', caseSensitive: false);
-    final digOnlyRegEx = RegExp(r'^[0-9]+$');
-    final streetRegEx = RegExp(r'.*');
-    final emailRegEx = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    _validateField(fields[FieldKeys.firstName]!, letOnlyRegEx, 'letters only');
-    _validateField(fields[FieldKeys.lastName]!, letOnlyRegEx, 'letters only');
-    _validateField(fields[FieldKeys.email]!, emailRegEx, 'invalid email');
-    _validateField(fields[FieldKeys.phone]!, digOnlyRegEx, 'digits only');
-    _validateField(fields[FieldKeys.street]!, streetRegEx, 'invalid street');
-    _validateField(fields[FieldKeys.city]!, letOnlyRegEx, 'letters only');
-    _validateField(fields[FieldKeys.country]!, letOnlyRegEx, 'letters only');
-    _validateField(fields[FieldKeys.zipCode]!, digOnlyRegEx, 'digits only');
+    FormValidator.validateField(fields[FieldKeys.firstName]!);
+    FormValidator.validateField(fields[FieldKeys.lastName]!);
+    FormValidator.validateField(fields[FieldKeys.email]!);
+    FormValidator.validateField(fields[FieldKeys.phone]!);
+    FormValidator.validateField(fields[FieldKeys.street]!);
+    FormValidator.validateField(fields[FieldKeys.city]!);
+    FormValidator.validateField(fields[FieldKeys.country]!);
+    FormValidator.validateField(fields[FieldKeys.zipCode]!);
     fields.forEach((key, value) {
-      if (value.validationError.value != '') result = false;
+      if (value.error != ValidationError.none) result = false;
     });
     return result;
   }
