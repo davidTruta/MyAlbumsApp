@@ -1,121 +1,105 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:my_albums_app/repo/profile_repo.dart';
+import 'package:my_albums_app/screen/profile/contact_info/contact_info_view_model.dart';
 import 'package:my_albums_app/widgets/app_bar_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../model/address.dart';
 import '../../../model/profile.dart';
 import '../../../theming/dimensions.dart';
-import '../profile_view_model.dart';
+import 'widgets/form_widget.dart';
 
 class ContactInfoScreen extends StatefulWidget {
-  final ProfileViewModel profileViewModel;
-  final Function updateProfile;
+  final Profile? profile;
 
-  const ContactInfoScreen(
-      {Key? key, required this.profileViewModel, required this.updateProfile})
-      : super(key: key);
+  const ContactInfoScreen({Key? key, this.profile}) : super(key: key);
 
   @override
   State<ContactInfoScreen> createState() => _ContactInfoScreenState();
 }
 
 class _ContactInfoScreenState extends State<ContactInfoScreen> {
-  final _formKey = GlobalKey<FormState>();
-
-  late final FocusNode fnFirstLast;
-  late final FocusNode fnLastEmail;
-  late final FocusNode fnEmailPhone;
-
-  late final FocusNode fnStreetCity;
-  late final FocusNode fnCityCountry;
-  late final FocusNode fnCountryZip;
-
-  String? firstName;
-  String? lastName;
-  String? email;
-  String? phone;
-  String? street;
-  String? city;
-  String? country;
-  String? zipCode;
-
-  bool isLoading = false;
+  ContactInfoViewModel contactInfoViewModel = ContactInfoViewModel(
+      ProfileRepo(SharedPreferences.getInstance()), Input());
+  late Map<FieldKeys, MyField> _fields;
 
   @override
   initState() {
-    super.initState();
-    fnCityCountry = FocusNode();
-    fnCountryZip = FocusNode();
-    fnEmailPhone = FocusNode();
-    fnFirstLast = FocusNode();
-    fnLastEmail = FocusNode();
-    fnStreetCity = FocusNode();
-  }
-
-  @override
-  dispose() {
-    fnStreetCity.dispose();
-    fnLastEmail.dispose();
-    fnFirstLast.dispose();
-    fnEmailPhone.dispose();
-    fnCountryZip.dispose();
-    fnCityCountry.dispose();
-    super.dispose();
-  }
-
-  InputDecoration _getInputDecoration([String? title]) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-      floatingLabelStyle: Theme.of(context).textTheme.labelMedium,
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-      label: title != null
-          ? Text(
-              title,
-              style: Theme.of(context).textTheme.labelMedium,
-            )
-          : null,
-      enabledBorder: UnderlineInputBorder(
-        borderSide:
-            BorderSide(color: Theme.of(context).primaryColor, width: 2.0),
+    _fields = {
+      FieldKeys.firstName: MyField(
+        key: FieldKeys.firstName,
+        textInputType: TextInputType.text,
+        initialValue: widget.profile?.firstName,
       ),
-      errorBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: Theme.of(context).errorColor, width: 2.0),
-      ),
-      errorText: null,
-      errorMaxLines: 1,
-      errorStyle: const TextStyle(
-        color: Colors.transparent,
-        fontSize: 0,
-      ),
-    );
-  }
-
-  Future<bool> applyChanges() async {
-    if (!_formKey.currentState!.validate()) {
-      return false;
-    }
-    _formKey.currentState!.save();
-
-    setState(() {
-      isLoading = true;
+      FieldKeys.lastName: MyField(
+          key: FieldKeys.lastName,
+          textInputType: TextInputType.text,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.lastName),
+      FieldKeys.email: MyField(
+          key: FieldKeys.email,
+          textInputType: TextInputType.emailAddress,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.email),
+      FieldKeys.phone: MyField(
+          key: FieldKeys.phone,
+          textInputType: TextInputType.phone,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.phone),
+      FieldKeys.street: MyField(
+          key: FieldKeys.street,
+          textInputType: TextInputType.streetAddress,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.address?.street),
+      FieldKeys.city: MyField(
+          key: FieldKeys.city,
+          textInputType: TextInputType.text,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.address?.city),
+      FieldKeys.country: MyField(
+          key: FieldKeys.country,
+          textInputType: TextInputType.text,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.address?.country),
+      FieldKeys.zipCode: MyField(
+          key: FieldKeys.zipCode,
+          textInputType: TextInputType.number,
+          focusNode: FocusNode(),
+          initialValue: widget.profile?.address?.zipCode),
+    };
+    contactInfoViewModel.output.changesSucceeded.listen((value) {
+      if (value) {
+        Navigator.of(context).pop();
+      }
     });
+    super.initState();
+  }
 
-    await widget.profileViewModel.saveProfile(Profile(
-      id: 1,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phone,
-      address: Address(
-          id: 1,
-          street: street,
-          country: country,
-          city: city,
-          zipCode: zipCode),
-    ));
-    widget.updateProfile();
-    return true;
+  void _setTitlesAndToFocus(BuildContext context) {
+    _fields[FieldKeys.firstName]?.title =
+        AppLocalizations.of(context)!.firstName.toUpperCase();
+    _fields[FieldKeys.firstName]?.toFocus =
+        _fields[FieldKeys.lastName]?.focusNode;
+    _fields[FieldKeys.lastName]?.title =
+        AppLocalizations.of(context)!.lastName.toUpperCase();
+    _fields[FieldKeys.lastName]?.toFocus = _fields[FieldKeys.email]?.focusNode;
+    _fields[FieldKeys.email]?.title =
+        AppLocalizations.of(context)!.emailAddress.toUpperCase();
+    _fields[FieldKeys.email]?.toFocus = _fields[FieldKeys.phone]?.focusNode;
+    _fields[FieldKeys.phone]?.title =
+        AppLocalizations.of(context)!.phoneNumber.toUpperCase();
+    _fields[FieldKeys.phone]?.toFocus = _fields[FieldKeys.street]?.focusNode;
+    _fields[FieldKeys.street]?.title =
+        AppLocalizations.of(context)!.streetAddress.toUpperCase();
+    _fields[FieldKeys.street]?.toFocus = _fields[FieldKeys.city]?.focusNode;
+    _fields[FieldKeys.city]?.title =
+        AppLocalizations.of(context)!.city.toUpperCase();
+    _fields[FieldKeys.city]?.toFocus = _fields[FieldKeys.country]?.focusNode;
+    _fields[FieldKeys.country]?.title =
+        AppLocalizations.of(context)!.country.toUpperCase();
+    _fields[FieldKeys.country]?.toFocus = _fields[FieldKeys.zipCode]?.focusNode;
+    _fields[FieldKeys.zipCode]?.title =
+        AppLocalizations.of(context)!.zipCode.toUpperCase();
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
@@ -130,232 +114,51 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
         child: Text(AppLocalizations.of(context)!.back),
       ),
       actions: [
-        isLoading == false
-            ? TextButton(
-                onPressed: () async {
-                  if (await applyChanges()) {
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: Text(AppLocalizations.of(context)!.apply),
-              )
-            : const Center(
-                child: CircularProgressIndicator(),
-              )
+        TextButton(
+          onPressed: () {
+            contactInfoViewModel.input.applyChanges.add(_fields);
+          },
+          child: Text(AppLocalizations.of(context)!.apply),
+        )
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    _setTitlesAndToFocus(context);
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: albumListPadding,
-          children: [
-            largeVerticalDistance,
-            Row(
-              children: [
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    style: Theme.of(context).textTheme.labelSmall,
-                    decoration: _getInputDecoration(
-                        AppLocalizations.of(context)!.firstName.toUpperCase()),
-                    onFieldSubmitted: (str) {
-                      fnFirstLast.requestFocus();
-                    },
-                    onSaved: (str) {
-                      firstName = str;
-                    },
-                    validator: (str) {
-                      if (str!.isEmpty) {
-                        return 'First name field cannot be empty';
-                      }
-                      return null;
-                    },
-                  ),
-                )),
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    style: Theme.of(context).textTheme.labelSmall,
-                    decoration: _getInputDecoration(
-                        AppLocalizations.of(context)!.lastName.toUpperCase()),
-                    focusNode: fnFirstLast,
-                    onFieldSubmitted: (str) {
-                      fnLastEmail.requestFocus();
-                    },
-                    onSaved: (str) {
-                      lastName = str;
-                    },
-                    validator: (str) {
-                      print('validation');
-                      if (str!.isEmpty) {
-                        return 'Last name field cannot be empty';
-                      }
-                      return null;
-                    },
-                  ),
-                ))
-              ],
-            ),
-            smallVerticalDistance,
-            TextFormField(
-              keyboardType: TextInputType.emailAddress,
-              style: Theme.of(context).textTheme.labelSmall,
-              decoration: _getInputDecoration(
-                  AppLocalizations.of(context)!.emailAddress.toUpperCase()),
-              focusNode: fnLastEmail,
-              onFieldSubmitted: (str) {
-                fnEmailPhone.requestFocus();
-              },
-              onSaved: (str) {
-                email = str;
-              },
-              validator: (str) {
-                print('validation');
-                if (str!.isEmpty) {
-                  return 'First name field cannot be empty';
-                }
-                return null;
-              },
-            ),
-            smallVerticalDistance,
-            TextFormField(
-              keyboardType: TextInputType.phone,
-              style: Theme.of(context).textTheme.labelSmall,
-              decoration: _getInputDecoration(
-                  AppLocalizations.of(context)!.phoneNumber.toUpperCase()),
-              focusNode: fnEmailPhone,
-              onSaved: (str) {
-                phone = str;
-              },
-              validator: (str) {
-                print('validation');
-                if (str!.isEmpty) {
-                  return 'First name field cannot be empty';
-                }
-                return null;
-              },
-            ),
-            xxxLargeVerticalDistance,
-            TextFormField(
-              keyboardType: TextInputType.streetAddress,
-              style: Theme.of(context).textTheme.labelSmall,
-              decoration: _getInputDecoration(
-                  AppLocalizations.of(context)!.streetAddress.toUpperCase()),
-              onFieldSubmitted: (str) {
-                fnStreetCity.requestFocus();
-              },
-              onSaved: (str) {
-                street = str;
-              },
-              validator: (str) {
-                print('validation');
-                if (str!.isEmpty) {
-                  return 'First name field cannot be empty';
-                }
-                return null;
-              },
-            ),
-            smallVerticalDistance,
-            Row(
-              children: [
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: TextFormField(
-                      keyboardType: TextInputType.text,
-                      style: Theme.of(context).textTheme.labelSmall,
-                      decoration: _getInputDecoration(
-                          AppLocalizations.of(context)!.city.toUpperCase()),
-                      focusNode: fnStreetCity,
-                      onFieldSubmitted: (str) {
-                        fnCityCountry.requestFocus();
-                      },
-                      onSaved: (str) {
-                        city = str;
-                      },
-                      validator: (str) {
-                        print('validation');
-                        if (str!.isEmpty) {
-                          return 'First name field cannot be empty';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
+      body: ListView(
+        padding: albumListPadding,
+        children: [
+          normalVerticalDistance,
+          StreamBuilder(
+              stream: contactInfoViewModel.output.changesApplied,
+              builder: (context, _) {
+                return FormWidget(
+                  contactInfoViewModel: contactInfoViewModel,
+                  fields: _fields,
+                );
+              }),
+          largeVerticalDistance,
+          Align(
+              child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: TextFormField(
-                      keyboardType: TextInputType.text,
-                      style: Theme.of(context).textTheme.labelSmall,
-                      decoration: _getInputDecoration(
-                          AppLocalizations.of(context)!.country.toUpperCase()),
-                      focusNode: fnCityCountry,
-                      onFieldSubmitted: (str) {
-                        fnCountryZip.requestFocus();
-                      },
-                      onSaved: (str) {
-                        country = str;
-                      },
-                      validator: (str) {
-                        print('validation');
-                        if (str!.isEmpty) {
-                          return 'First name field cannot be empty';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                )
-              ],
+                visualDensity: VisualDensity.compact),
+            onPressed: () {
+              setState(() {
+                contactInfoViewModel.input.fetchLocation.add(true);
+              });
+            },
+            child: Text(
+              AppLocalizations.of(context)!.useMyLocation,
             ),
-            smallVerticalDistance,
-            TextFormField(
-              keyboardType: TextInputType.number,
-              style: Theme.of(context).textTheme.labelSmall,
-              decoration: _getInputDecoration(
-                  AppLocalizations.of(context)!.zipCode.toUpperCase()),
-              focusNode: fnCountryZip,
-              onSaved: (str) {
-                zipCode = str;
-              },
-              validator: (str) {
-                print('validation');
-                if (str!.isEmpty) {
-                  return 'First name field cannot be empty';
-                }
-                return null;
-              },
-            ),
-            largeVerticalDistance,
-            ElevatedButton(
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                ),
-              ),
-              onPressed: () {
-                //TODO
-              },
-              child: Text(
-                AppLocalizations.of(context)!.useMyLocation,
-              ),
-            ),
-          ],
-        ),
+          )),
+        ],
       ),
     );
   }

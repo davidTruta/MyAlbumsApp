@@ -13,7 +13,7 @@ const headlineLargeTextStyle =
 const titleMediumTextStyle =
     TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primaryColor);
 
-const titleSmallTextStyle = TextStyle(fontSize: 14, color: subtitleColor);
+const titleSmallTextStyle = TextStyle(fontSize: 13, color: subtitleColor);
 
 const labelSmallTextStyle = TextStyle(
     fontSize: 14,

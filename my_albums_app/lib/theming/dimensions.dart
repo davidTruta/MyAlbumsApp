@@ -30,7 +30,11 @@ const xxxLargeVerticalDistance = SizedBox(
 
 const dividerThickness = 0.7;
 
+const textFieldBorderThickness = 2.0;
+
 const tabBarHeight = 60.0;
+
+const noPadding = EdgeInsets.all(0);
 
 const albumListPadding = EdgeInsets.all(largePadding);
 const albumDetailsPadding = EdgeInsets.symmetric(horizontal: xxLargePadding);
@@ -38,7 +42,7 @@ const albumInteractionPadding = EdgeInsets.symmetric(vertical: largePadding);
 
 const photoListTileTitleGap = largePadding;
 
-const photoListTilePadding = EdgeInsets.all(0);
+const photoListTilePadding = noPadding;
 
 const albumListTileDistance = normalVerticalDistance;
 
@@ -52,3 +56,6 @@ const contactInfoTextFieldPadding = EdgeInsets.symmetric(
 
 const contactInfoPadding = EdgeInsets.symmetric(
     vertical: 0, horizontal: xLargePadding);
+
+const leftFormFieldPadding = EdgeInsets.only(right: 10);
+const rightFormFieldPadding = EdgeInsets.only(left: 10);

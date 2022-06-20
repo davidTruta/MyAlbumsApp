@@ -26,5 +26,11 @@
     "zipCode": "Cod Postal",
     "useMyLocation": "Foloseste locatia curenta",
     "back": "Inapoi",
-    "apply": "Salveaza"
+    "apply": "Salveaza",
+    "required": "necesar",
+    "lettersOnly": "doar litere",
+    "digitsOnly": "doar cifre",
+    "invalidEmail": "email invalid",
+    "invalidStreet": "strada invalida",
+    "memberSince": "Membru din"
 }
