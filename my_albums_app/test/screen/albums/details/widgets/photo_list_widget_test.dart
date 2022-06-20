@@ -35,7 +35,7 @@ void main() {
                           title: "title$index",
                           thumbnailUrl: "https://example.com/image.png",
                           url: "https://example.com/image.png",
-                          key: Key("item_${index}_text"),
+                          //TODO how to do it without the key ? key: Key("item_${index}_text"),
                         ),
                       ),
                     ),

@@ -11,9 +11,8 @@ class Photo {
   String? title;
   String? url;
   String? thumbnailUrl;
-  Key? key;
 
-  Photo({this.id, this.albumId, this.title, this.url, this.thumbnailUrl, this.key});
+  Photo({this.id, this.albumId, this.title, this.url, this.thumbnailUrl});
 
   factory Photo.fromJson(Map<String, dynamic> json) => _$PhotoFromJson(json);
 

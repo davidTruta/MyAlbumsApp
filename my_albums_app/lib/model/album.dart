@@ -8,9 +8,8 @@ class Album {
   int? id;
   int? userId;
   String? title;
-  Key? key;
 
-  Album({this.id, this.userId, this.title, this.key});
+  Album({this.id, this.userId, this.title});
 
   factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);
 

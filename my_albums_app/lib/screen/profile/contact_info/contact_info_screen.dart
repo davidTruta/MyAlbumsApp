@@ -28,12 +28,12 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
     _fields = {
       FieldKeys.firstName: MyField(
         key: FieldKeys.firstName,
-        textInputType: TextInputType.text,
+        textInputType: TextInputType.name,
         initialValue: widget.profile?.firstName,
       ),
       FieldKeys.lastName: MyField(
           key: FieldKeys.lastName,
-          textInputType: TextInputType.text,
+          textInputType: TextInputType.name,
           focusNode: FocusNode(),
           initialValue: widget.profile?.lastName),
       FieldKeys.email: MyField(
