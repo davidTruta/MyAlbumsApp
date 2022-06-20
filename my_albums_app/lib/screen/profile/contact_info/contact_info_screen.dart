@@ -67,9 +67,7 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
           focusNode: FocusNode(),
           initialValue: widget.profile?.address?.zipCode),
     };
-    print('initS');
-    contactInfoViewModel.output.changesApplied.listen((value) {
-      print('listen');
+    contactInfoViewModel.output.changesSucceeded.listen((value) {
       if (value) {
         Navigator.of(context).pop();
       }
@@ -118,7 +116,6 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
       actions: [
         TextButton(
           onPressed: () {
-            print('pressed');
             contactInfoViewModel.input.applyChanges.add(_fields);
           },
           child: Text(AppLocalizations.of(context)!.apply),
@@ -130,7 +127,6 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
   @override
   Widget build(BuildContext context) {
     _setTitlesAndToFocus(context);
-    print('building');
     return Scaffold(
       appBar: _buildAppBar(context),
       body: ListView(
@@ -139,8 +135,7 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
           normalVerticalDistance,
           StreamBuilder(
               stream: contactInfoViewModel.output.changesApplied,
-              builder: (context, snapshot) {
-                print('stremBldr');
+              builder: (context, _) {
                 return FormWidget(
                   contactInfoViewModel: contactInfoViewModel,
                   fields: _fields,

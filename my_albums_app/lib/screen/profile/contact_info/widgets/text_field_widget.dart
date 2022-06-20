@@ -41,8 +41,22 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         focusedBorder: border);
   }
 
-  String _buildStringFromValidationError(BuildContext context){
-    return AppLocalizations.of(context)!.required;
+  String _buildStringFromValidationError(
+      BuildContext context, ValidationError error) {
+    switch (error) {
+      case ValidationError.required:
+        return AppLocalizations.of(context)!.required;
+      case ValidationError.lettersOnly:
+        return AppLocalizations.of(context)!.lettersOnly;
+      case ValidationError.digitsOnly:
+        return AppLocalizations.of(context)!.digitsOnly;
+      case ValidationError.invalidStreet:
+        return AppLocalizations.of(context)!.invalidStreet;
+      case ValidationError.invalidEmail:
+        return AppLocalizations.of(context)!.invalidEmail;
+      default:
+        return AppLocalizations.of(context)!.unknown;
+    }
   }
 
   @override
@@ -79,8 +93,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               children: [
                 normalVerticalDistance,
                 Text(
-                  _buildStringFromValidationError(context)
-                  ,
+                  _buildStringFromValidationError(context, widget.field.error),
                   style: TextStyle(
                     color: Theme.of(context).errorColor,
                     fontSize: 16,

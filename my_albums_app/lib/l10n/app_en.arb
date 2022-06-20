@@ -27,5 +27,10 @@
     "useMyLocation": "Use my location",
     "back": "Back",
     "apply": "Apply",
-    "required": "required"
+    "required": "required",
+    "lettersOnly": "letters only",
+    "digitsOnly": "digits only",
+    "invalidEmail": "invalid email",
+    "invalidStreet": "invalid street",
+    "memberSince": "Member since"
 }

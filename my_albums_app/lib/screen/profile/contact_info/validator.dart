@@ -2,7 +2,7 @@ import 'package:my_albums_app/utils.dart';
 
 import 'contact_info_view_model.dart';
 
-enum ValidationError{
+enum ValidationError {
   none,
   required,
   lettersOnly,
@@ -11,17 +11,8 @@ enum ValidationError{
   invalidStreet
 }
 
-
 class FormValidator {
-  static final FormValidator _singleton = FormValidator._internal();
-
-  factory FormValidator() {
-    return _singleton;
-  }
-
-  FormValidator._internal();
-
-  static void _validate(MyField field, RegExp regExp, ValidationError error) {
+  void _validate(MyField field, RegExp regExp, ValidationError error) {
     if (field.getText.isEmpty) {
       field.error = ValidationError.required;
     } else if (!field.getText.contains(regExp)) {
@@ -32,7 +23,10 @@ class FormValidator {
     }
   }
 
-  static void validateField(MyField field) {
+  void validateField(MyField? field) {
+    if(field == null) {
+      return;
+    }
     if (field.key == FieldKeys.firstName ||
         field.key == FieldKeys.lastName ||
         field.key == FieldKeys.city ||

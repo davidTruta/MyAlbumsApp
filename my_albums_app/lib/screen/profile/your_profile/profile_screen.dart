@@ -8,8 +8,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_albums_app/widgets/list_tile_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../model/profile.dart';
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -53,6 +51,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildUser(BuildContext context, ProfileData profileData) {
+    final translations = {
+      "unknown": AppLocalizations.of(context)!.unknown,
+      "emailAddress": AppLocalizations.of(context)!.emailAddress,
+      "memberSince": AppLocalizations.of(context)!.memberSince,
+    };
     return SingleChildScrollView(
       child: Padding(
         padding: albumListPadding,
@@ -72,15 +75,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               normalVerticalDistance,
               Text(
-                profileData.fullName,
+                translations.containsKey(profileData.fullName)
+                    ? translations[profileData.fullName]!
+                    : profileData.fullName,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              Text(profileData.memberSince,style: Theme.of(context).textTheme.titleSmall,),
-
+              Text(
+                translations.containsKey(profileData.memberSince)
+                    ? "${translations[profileData.memberSince]!} ${profileData.profile!.year}"
+                    : profileData.memberSince,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
               xLargeVerticalDistance,
               ListTileWidget(
                 title: Text(AppLocalizations.of(context)!.contactInfo),
-                subtitle: Text(profileData.emailAddress),
+                subtitle: Text(translations
+                        .containsKey(profileData.emailAddress)
+                    ? "${translations[profileData.emailAddress]}: ${profileData.profile!.email}"
+                    : profileData.emailAddress),
                 leadingIconData: Icons.perm_contact_calendar_rounded,
                 onTap: () {
                   Navigator.of(context)

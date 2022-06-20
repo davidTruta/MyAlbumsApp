@@ -14,17 +14,20 @@ class ProfileData {
 
   ProfileData({
     this.profile,
-  }){
-    if(profile == null){
+  }) {
+    if (profile == null) {
       circularAvatarText = "?";
-      fullName = 'Unknown'; //TODO translate, but how?
+      fullName = 'unknown';
       emailAddress = "";
       memberSince = "";
-    }else{
+    } else {
+      if(profile!.firstName == null || profile!.firstName!.isEmpty) {
+        return;
+      }
       circularAvatarText = profile!.firstName![0];
       fullName = "${profile!.firstName!} ${profile!.lastName!}";
-      emailAddress = "Email address: ${profile!.email}";
-      memberSince = "Member since ${profile!.year}";
+      emailAddress = "emailAddress";
+      memberSince = "memberSince";
     }
   }
 }
@@ -46,9 +49,10 @@ class ProfileViewModel {
 
   ProfileViewModel(this._profileRepo, this.input) {
     output = Output(
-      input.load.flatMap((_) => _profileRepo.getProfile().asStream().map(
-            (profile) => ProfileData(profile: profile)
-          )),
+      input.load.flatMap((_) => _profileRepo
+          .getProfile()
+          .asStream()
+          .map((profile) => ProfileData(profile: profile))),
     );
   }
 }

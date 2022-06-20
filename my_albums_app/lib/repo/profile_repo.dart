@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:geocoding/geocoding.dart';
+import 'package:location/location.dart' as coordinates;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/profile.dart';
@@ -24,4 +26,15 @@ class ProfileRepo {
         return Profile.fromJson(jsonDecode(profile));
     });
   }
+
+  Future<Placemark> getCurrentLocationAddress() {
+    coordinates.Location location = coordinates.Location();
+    return location.getLocation().then((data) {
+      return placemarkFromCoordinates(data.latitude!, data.longitude!)
+          .then((placeMarks) {
+        return placeMarks[0];
+      });
+    });
+  }
+
 }

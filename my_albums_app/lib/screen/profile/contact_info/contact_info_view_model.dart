@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:location/location.dart' as coordinates;
 import 'package:my_albums_app/screen/profile/contact_info/validator.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -58,40 +57,45 @@ class Input {
 class Output {
   final Stream<bool> changesApplied;
   final Stream<Placemark> fetchedLocation;
-  ///final Stream<bool> changesSucceeded;
+  final Stream<bool> changesSucceeded;
 
-  Output({
-    required this.changesApplied,
-    required this.fetchedLocation,
-  }); ///required this.changesSucceeded});
+  Output(
+      {required this.changesApplied,
+      required this.fetchedLocation,
+      required this.changesSucceeded});
 }
 
 class ContactInfoViewModel {
   final ProfileRepo _profileRepo;
   late final Input input;
   late final Output output;
+  final FormValidator validator = FormValidator();
 
   ContactInfoViewModel(this._profileRepo, this.input) {
-    final stream = input.applyChanges.flatMap((field) => _applyChanges(field));
+    final stream = input.applyChanges
+        .flatMap((field) => _applyChanges(field))
+        .asBroadcastStream();
     output = Output(
       changesApplied: stream,
-      fetchedLocation: input.fetchLocation.flatMap((_) => _getCurrentLocationAddress()),
-      /// changesSucceeded: stream,
+      fetchedLocation: input.fetchLocation
+          .flatMap((_) => _profileRepo.getCurrentLocationAddress().asStream())
+          .asBroadcastStream(),
+      changesSucceeded: stream.flatMap((value) => Stream.value(value)),
     );
   }
 
-  Stream<Placemark> _getCurrentLocationAddress() {
-    coordinates.Location location = coordinates.Location();
-    return location.getLocation().then((data) {
-      return placemarkFromCoordinates(data.latitude!, data.longitude!)
-          .then((placeMarks) {
-        return placeMarks[0];
-      });
-    }).asStream();
+  void setLocationFields(Map<FieldKeys, MyField> fields, Placemark place) {
+    fields[FieldKeys.street]!.error = ValidationError.none;
+    fields[FieldKeys.city]!.error = ValidationError.none;
+    fields[FieldKeys.country]!.error = ValidationError.none;
+    fields[FieldKeys.zipCode]!.error = ValidationError.none;
+    fields[FieldKeys.street]!.setText(place.street!);
+    fields[FieldKeys.city]!.setText(place.locality!);
+    fields[FieldKeys.country]!.setText(place.country!);
+    fields[FieldKeys.zipCode]!.setText(place.postalCode!);
   }
 
   Stream<bool> _applyChanges(Map<FieldKeys, MyField> fields) {
-    print('applying!'); //TODO figure out why this is called twice
     if (!_validateForm(fields)) return Stream.value(false);
     return _profileRepo
         .saveProfile(Profile(
@@ -111,14 +115,14 @@ class ContactInfoViewModel {
 
   bool _validateForm(Map<FieldKeys, MyField> fields) {
     var result = true;
-    FormValidator.validateField(fields[FieldKeys.firstName]!);
-    FormValidator.validateField(fields[FieldKeys.lastName]!);
-    FormValidator.validateField(fields[FieldKeys.email]!);
-    FormValidator.validateField(fields[FieldKeys.phone]!);
-    FormValidator.validateField(fields[FieldKeys.street]!);
-    FormValidator.validateField(fields[FieldKeys.city]!);
-    FormValidator.validateField(fields[FieldKeys.country]!);
-    FormValidator.validateField(fields[FieldKeys.zipCode]!);
+    validator.validateField(fields[FieldKeys.firstName]);
+    validator.validateField(fields[FieldKeys.lastName]);
+    validator.validateField(fields[FieldKeys.email]);
+    validator.validateField(fields[FieldKeys.phone]);
+    validator.validateField(fields[FieldKeys.street]);
+    validator.validateField(fields[FieldKeys.city]);
+    validator.validateField(fields[FieldKeys.country]);
+    validator.validateField(fields[FieldKeys.zipCode]);
     fields.forEach((key, value) {
       if (value.error != ValidationError.none) result = false;
     });
