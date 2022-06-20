@@ -9,6 +9,7 @@ import '../model/photo.dart';
 class PhotoQueryBloc implements Bloc {
   final _controller = StreamController<List<Photo>>();
   final _client = ClientApi(Dio());
+
   Stream<List<Photo>> get photoStream => _controller.stream;
 
   void submitQuery(int query) async {

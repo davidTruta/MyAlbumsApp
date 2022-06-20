@@ -26,5 +26,11 @@
     "zipCode": "Zip Code",
     "useMyLocation": "Use my location",
     "back": "Back",
-    "apply": "Apply"
+    "apply": "Apply",
+    "required": "required",
+    "lettersOnly": "letters only",
+    "digitsOnly": "digits only",
+    "invalidEmail": "invalid email",
+    "invalidStreet": "invalid street",
+    "memberSince": "Member since"
 }
