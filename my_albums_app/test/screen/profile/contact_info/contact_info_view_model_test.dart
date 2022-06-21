@@ -10,9 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   group("contact_info_view_model - ", () {
-    ProfileRepo? profileRepo;
-    ContactInfoViewModel? contactInfoViewModel;
-    Profile? mockProfile = Profile(
+    final mockProfileValues = Profile(
       firstName: 'first',
       lastName: 'last',
       email: 'email@gmail.com',
@@ -23,39 +21,55 @@ void main() {
           country: 'United States',
           zipCode: '94043'),
     );
-    Placemark mockPlace = Placemark(
+    Profile mockProfile = mockProfileValues;
+    late Map<FieldKeys, MyField> mockFields;
+    ProfileRepo? profileRepo;
+    ContactInfoViewModel? contactInfoViewModel;
+    final placeValues = Placemark(
         street: mockProfile.address!.street,
         postalCode: mockProfile.address!.zipCode,
         locality: mockProfile.address!.city,
         country: mockProfile.address!.country);
-    Map<FieldKeys, MyField> mockFields = {
-      FieldKeys.firstName: MyField(
-          key: FieldKeys.firstName,
-          initialValue: mockProfile.firstName,
-          textInputType: TextInputType.name),
-      FieldKeys.street: MyField(
-          key: FieldKeys.street,
-          initialValue: 'init',
-          textInputType: TextInputType.name),
-      FieldKeys.zipCode: MyField(
-          key: FieldKeys.zipCode,
-          initialValue: 'init',
-          textInputType: TextInputType.name),
-      FieldKeys.city: MyField(
-          key: FieldKeys.city,
-          initialValue: 'init',
-          textInputType: TextInputType.name),
-      FieldKeys.country: MyField(
-          key: FieldKeys.country,
-          initialValue: 'init',
-          textInputType: TextInputType.name)
-    };
+    Placemark mockPlace = placeValues;
 
-    //This will run before every test
     setUp(() {
       SharedPreferences.setMockInitialValues({});
       profileRepo = ProfileRepo(SharedPreferences.getInstance());
       contactInfoViewModel = ContactInfoViewModel(profileRepo!, Input());
+      mockProfile = mockProfileValues;
+      mockFields = {
+        FieldKeys.firstName: MyField(
+            key: FieldKeys.firstName,
+            initialValue: mockProfile.firstName,
+            textInputType: TextInputType.name),
+        FieldKeys.lastName: MyField(
+            key: FieldKeys.lastName,
+            initialValue: mockProfile.lastName,
+            textInputType: TextInputType.name),
+        FieldKeys.email: MyField(
+            key: FieldKeys.email,
+            initialValue: mockProfile.email,
+            textInputType: TextInputType.emailAddress),
+        FieldKeys.phone: MyField(
+            key: FieldKeys.phone,
+            initialValue: mockProfile.phone,
+            textInputType: TextInputType.phone),
+        FieldKeys.street: MyField(
+            key: FieldKeys.street,
+            initialValue: mockProfile.address!.street,
+            textInputType: TextInputType.streetAddress),
+        FieldKeys.zipCode: MyField(
+            key: FieldKeys.zipCode,
+            initialValue: mockProfile.address!.zipCode,
+            textInputType: TextInputType.number),
+        FieldKeys.city:
+        MyField(key: FieldKeys.city, initialValue: mockProfile.address!.city),
+        FieldKeys.country: MyField(
+          key: FieldKeys.country,
+          initialValue: mockProfile.address!.country,
+        )
+      };
+      mockPlace = placeValues;
     });
 
     test(
@@ -77,7 +91,7 @@ void main() {
     });
 
     group('validator', () {
-      test('good data', () {
+      void validateFields() {
         contactInfoViewModel!.validator
             .validateField(mockFields[FieldKeys.firstName]);
         contactInfoViewModel!.validator
@@ -94,32 +108,103 @@ void main() {
             .validateField(mockFields[FieldKeys.country]);
         contactInfoViewModel!.validator
             .validateField(mockFields[FieldKeys.zipCode]);
+      }
+
+      test('good data', () {
+        validateFields();
+
+        expect(mockFields[FieldKeys.firstName]!.error, ValidationError.none);
+        expect(mockFields[FieldKeys.lastName]!.error, ValidationError.none);
+        expect(mockFields[FieldKeys.email]!.error, ValidationError.none);
+        expect(mockFields[FieldKeys.phone]!.error, ValidationError.none);
+        expect(mockFields[FieldKeys.street]!.error, ValidationError.none);
+        expect(mockFields[FieldKeys.city]!.error, ValidationError.none);
+        expect(mockFields[FieldKeys.country]!.error, ValidationError.none);
+        expect(mockFields[FieldKeys.zipCode]!.error, ValidationError.none);
       });
 
       test('bad data - empty', () {
-        //TODO
+        mockFields[FieldKeys.firstName]!.setText('');
+        mockFields[FieldKeys.lastName]!.setText('');
+        mockFields[FieldKeys.email]!.setText('');
+        mockFields[FieldKeys.phone]!.setText('');
+        mockFields[FieldKeys.street]!.setText('');
+        mockFields[FieldKeys.city]!.setText('');
+        mockFields[FieldKeys.country]!.setText('');
+        mockFields[FieldKeys.zipCode]!.setText('');
+
+        validateFields();
+
+        expect(
+            mockFields[FieldKeys.firstName]!.error, ValidationError.required);
+        expect(mockFields[FieldKeys.lastName]!.error, ValidationError.required);
+        expect(mockFields[FieldKeys.email]!.error, ValidationError.required);
+        expect(mockFields[FieldKeys.phone]!.error, ValidationError.required);
+        expect(mockFields[FieldKeys.street]!.error, ValidationError.required);
+        expect(mockFields[FieldKeys.city]!.error, ValidationError.required);
+        expect(mockFields[FieldKeys.country]!.error, ValidationError.required);
+        expect(mockFields[FieldKeys.zipCode]!.error, ValidationError.required);
       });
 
       test('bad data - invalid', () {
-        //TODO
+        mockFields[FieldKeys.firstName]!.setText('effective2');
+        mockFields[FieldKeys.lastName]!.setText('Agent007');
+        mockFields[FieldKeys.email]!.setText('mailInvalid');
+        mockFields[FieldKeys.phone]!.setText('07words');
+        mockFields[FieldKeys.street]!.setText('');
+        mockFields[FieldKeys.city]!.setText('C1t9');
+        mockFields[FieldKeys.country]!.setText('Co4ntr9');
+        mockFields[FieldKeys.zipCode]!.setText('i2e45');
+
+        validateFields();
+
+        expect(mockFields[FieldKeys.firstName]!.error,
+            ValidationError.lettersOnly);
+        expect(
+            mockFields[FieldKeys.lastName]!.error, ValidationError.lettersOnly);
+        expect(
+            mockFields[FieldKeys.email]!.error, ValidationError.invalidEmail);
+        expect(mockFields[FieldKeys.phone]!.error, ValidationError.digitsOnly);
+        expect(mockFields[FieldKeys.street]!.error, ValidationError.required);
+        expect(mockFields[FieldKeys.city]!.error, ValidationError.lettersOnly);
+        expect(
+            mockFields[FieldKeys.country]!.error, ValidationError.lettersOnly);
+        expect(
+            mockFields[FieldKeys.zipCode]!.error, ValidationError.digitsOnly);
       });
     });
 
-    group('changesApplied', () {
-      test('emits last result when a new stream is added to applyChanges', () {
-        //TODO
+    group('changesApplied - applyChanges', () {
+      test('emits true for valid fields', () {
+        expect(contactInfoViewModel!.output.changesApplied, emits(true));
+        contactInfoViewModel!.input.applyChanges.add(mockFields);
+      });
+
+      test('emits false for invalid fields', () {
+        mockFields[FieldKeys.email]!.setText('invalid');
+        expect(contactInfoViewModel!.output.changesApplied, emits(false));
+        contactInfoViewModel!.input.applyChanges.add(mockFields);
       });
     });
 
-    group('fetchedLocation', () {
-      test('', () {
-        //TODO
-      });
-    });
+/*    group('fetchedLocation - fetchLocation', () {
+      test('emits a placeMark for every input', () {
+        expect(contactInfoViewModel!.output.fetchedLocation,
+            emitsInOrder([mockPlace]));
+        contactInfoViewModel!.input.fetchLocation.add(true);
+      });// TODO don't know how to test this
+    });*/
 
-    group('changesSucceeded', () {
-      test('', () {
-        //TODO
+    group('changesSucceeded - applyChanges', () {
+      test('emits true for valid fields', () {
+        expect(contactInfoViewModel!.output.changesSucceeded, emits(true));
+        contactInfoViewModel!.input.applyChanges.add(mockFields);
+      });
+
+      test('emits false for invalid fields', () {
+        expect(contactInfoViewModel!.output.changesSucceeded, emits(false));
+        mockFields[FieldKeys.email]!.setText('invalid');
+        contactInfoViewModel!.input.applyChanges.add(mockFields);
       });
     });
   });

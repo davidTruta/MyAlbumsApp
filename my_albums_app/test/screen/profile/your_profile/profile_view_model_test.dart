@@ -43,30 +43,24 @@ void main() {
 
     test('emits the correct ProfileData - profile is null', () {
       // no Profile is currently saved
+
       profileViewModel!.input.load.add(true);
-      profileViewModel!.output.data.listen(
-        (profileData) {
-          expect(profileData.profile, null);
-          expect(profileData.memberSince, "");
-          expect(profileData.emailAddress, "");
-          expect(profileData.fullName, "unknown");
-          expect(profileData.circularAvatarText, "?");
-        },
-      );
+      expect(profileViewModel!.output.data, emits(ProfileData(profile: null)));
+
     });
 
     test('emits the correct ProfileData - profile is not null', () {
       profileRepo!.saveProfile(mockProfile);
       profileViewModel!.input.load.add(true);
-      profileViewModel!.output.data.listen(
-            (profileData) {
+      profileViewModel!.output.data.listen(expectAsync1(
+        (profileData) {
           expect(profileData.profile, mockProfile);
           expect(profileData.memberSince, "memberSince");
           expect(profileData.emailAddress, "emailAddress");
           expect(profileData.fullName, "first last");
           expect(profileData.circularAvatarText, "f");
         },
-      );
+      ));
     });
   });
 }

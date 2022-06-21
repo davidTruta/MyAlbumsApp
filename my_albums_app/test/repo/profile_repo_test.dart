@@ -51,7 +51,7 @@ void main() {
     });
 
     test('getCurrentLocation() test case : should fetch the current location', () async {
-      /// final place = await profileRepo!.getCurrentLocationAddress();
+      final place = await profileRepo!.getCurrentLocationAddress();
       //TODO can I test this?
     });
 
