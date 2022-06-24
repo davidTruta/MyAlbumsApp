@@ -14,16 +14,16 @@ class ProfileRepo {
 
   Future<bool> saveProfile(Profile profile) {
     return sharedPreferences.then((prefs) {
-      prefs.remove(_userKey);
-      return prefs.setString(_userKey, jsonEncode(profile.toJson()));
+        prefs.remove(_userKey);
+        return prefs.setString(_userKey, jsonEncode(profile.toJson()));
     });
   }
 
   Future<Profile?> getProfile() {
     return sharedPreferences.then((prefs) {
-        final String? profile = prefs.getString(_userKey);
-        if (profile == null) return null;
-        return Profile.fromJson(jsonDecode(profile));
+      final String? profile = prefs.getString(_userKey);
+      if (profile == null) return null;
+      return Profile.fromJson(jsonDecode(profile));
     });
   }
 
@@ -32,9 +32,9 @@ class ProfileRepo {
     return location.getLocation().then((data) {
       return placemarkFromCoordinates(data.latitude!, data.longitude!)
           .then((placeMarks) {
+            print(placeMarks[0]);
         return placeMarks[0];
       });
     });
   }
-
 }

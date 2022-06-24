@@ -21,7 +21,7 @@ class ProfileData {
       emailAddress = "";
       memberSince = "";
     } else {
-      if(profile!.firstName == null || profile!.firstName!.isEmpty) {
+      if (profile!.firstName == null || profile!.firstName!.isEmpty) {
         return;
       }
       circularAvatarText = profile!.firstName![0];
@@ -30,6 +30,17 @@ class ProfileData {
       memberSince = "memberSince";
     }
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is ProfileData &&
+        other.profile == profile;
+  }
+
+  @override
+  int get hashCode => profile.hashCode;
 }
 
 class Input {
